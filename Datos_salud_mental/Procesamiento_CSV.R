@@ -1,24 +1,19 @@
-
-
 library(readr)
 
 leer_csvs_objetos <- function(directorio, patron = "\\.csv$") {
   archivos <- list.files(path = directorio, pattern = patron, full.names = TRUE)
   
   for (archivo in archivos) {
+    # Mantener el nombre del archivo como nombre del objeto
     nombre <- tools::file_path_sans_ext(basename(archivo))
     
-    # Intentar primero con UTF-8, si falla probar con Latin1
-    datos <- tryCatch(
-      read_delim(archivo, delim = ";", locale = locale(encoding = "UTF-8")),
-      error = function(e) {
-        read_delim(archivo, delim = ";", locale = locale(encoding = "Latin1"))
-      }
-    )
+    # Leer el CSV con delimitador ";"
+    datos <- read_delim(archivo, delim = ";", locale = locale(encoding = "Latin1"))
     
-    # Limpiar nombres de columnas (quita espacios, acentos, etc.)
+    # Limpiar los nombres de las columnas (atributos)
     colnames(datos) <- make.names(colnames(datos))
     
+    # Crear el objeto en el entorno global
     assign(nombre, datos, envir = .GlobalEnv)
   }
 }
