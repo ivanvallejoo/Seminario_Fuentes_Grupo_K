@@ -24,7 +24,6 @@ leer_csvs_objetos <- function(directorio, patron = "\\.csv$") {
 
 
 # Ejemplo de uso:
-leer_csvs_objetos("C:/Users/ivanv/Desktop/ING_Salud/3º Ing_Salud/Fuentes_2/Seminario_Fuentes_Grupo_K/Datos_salud_mental")
-leer_csvs_objetos("C:/Users/diego/Downloads/Seminario_Fuentes_Grupo_K/Datos_salud_mental")
+leer_csvs_objetos("Datos_salud_mental")
 
 

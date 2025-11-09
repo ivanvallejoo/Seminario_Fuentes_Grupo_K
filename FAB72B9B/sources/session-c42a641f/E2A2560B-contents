@@ -1,0 +1,71 @@
+
+
+library(readr)
+library(purrr)
+library(dplyr)
+library(tools)
+
+#' Lee todos los archivos CSV de un directorio y los devuelve en una lista nombrada.
+#' Aplica la codificación "Latin1" a todos, pero usa un delimitador
+#' diferente para "47281.csv".
+#'
+#' @param directorio La ruta a la carpeta que contiene los archivos CSV.
+#' @param patron El patrón de archivo a buscar (por defecto, ".csv").
+#'
+#' @return Una lista (list) donde cada elemento es un dataframe (tibble).
+#'         El nombre de cada elemento es el nombre del archivo CSV sin la extensión.
+#'
+leer_csvs_en_lista <- function(directorio, patron = "\\.csv$") {
+  
+  # 1. Encontrar los archivos
+  archivos <- list.files(path = directorio, pattern = patron, full.names = TRUE)
+  
+  # 2. Crear los nombres para la lista
+  nombres_lista <- tools::file_path_sans_ext(basename(archivos))
+  
+  # 3. Leer todos los archivos usando purrr::map
+  lista_datos <- purrr::map(archivos, function(archivo_individual) {
+    
+    # Obtenemos el nombre base del archivo para nuestra lógica
+    nombre_archivo <- basename(archivo_individual)
+    
+    # Definimos la codificación (es la misma para todos)
+    codificacion_correcta <- "Latin1"
+    
+    # 4. Lógica de IF / ELSE para aplicar REGLAS DE DELIMITADOR diferentes
+    if (nombre_archivo == "47281.csv") {
+      # REGLA PARA 47281.csv
+      datos <- read_delim(
+        archivo_individual, 
+        delim = "\t",  # <-- Delimitador por TABULACIÓN
+        locale = locale(encoding = codificacion_correcta),
+        trim_ws = TRUE
+      )
+      
+    } else {
+      # REGLA PARA TODOS LOS DEMÁS ARCHIVOS
+      datos <- read_delim(
+        archivo_individual, 
+        delim = ";",  # <-- Delimitador por PUNTO Y COMA
+        locale = locale(encoding = codificacion_correcta),
+        trim_ws = TRUE
+      )
+    }
+    
+    # 5. Limpieza de nombres de columnas (se aplica a todos)
+    colnames(datos) <- make.names(colnames(datos))
+    
+    # 6. Devolver el dataframe individual ya limpio
+    return(datos)
+  })
+  
+  # 7. Asignar los nombres a la lista y devolverla
+  lista_datos <- purrr::set_names(lista_datos, nombres_lista)
+  
+  return(lista_datos)
+}
+mis_datos <- leer_csvs_en_lista("Datos_salud_mental")
+
+View(mis_datos$`47281`) # Este debería tener varias columnas
+View(mis_datos$`47803`) # Este debería tener tildes
+View(mis_datos$TIC_por_comunidades)
