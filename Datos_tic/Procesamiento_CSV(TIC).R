@@ -7,7 +7,6 @@ leer_csvs_objetos <- function(directorio, patron = "\\.csv$") {
   for (archivo in archivos) {
     nombre <- tools::file_path_sans_ext(basename(archivo))
     
-    # Detectar delimitador automáticamente (coma, punto y coma, tabulador, barra vertical)
     primera_linea <- readLines(archivo, n = 1, encoding = "UTF-8")
     posibles <- c(";", ",", "\t", "|")
     cuenta <- sapply(posibles, function(d) stringi::stri_count_fixed(primera_linea, d))
