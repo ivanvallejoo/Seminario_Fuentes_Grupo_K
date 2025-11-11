@@ -17,7 +17,7 @@ View(tabla_completa)
 
 # 1. Carga la librería (es parte del Tidyverse, como dplyr)
 library(tidyr)
-library.dplyr)
+library(dplyr)
 
 # 2. Asumimos que tu tabla se llama "tabla_completa"
 #    (la que creamos en el paso anterior)
