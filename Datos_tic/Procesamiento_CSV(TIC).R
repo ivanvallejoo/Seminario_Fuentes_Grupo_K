@@ -28,4 +28,4 @@ leer_csvs_objetos <- function(directorio, patron = "\\.csv$") {
   }
 }
 
-leer_csvs_objetos("C:/Users/diego/Downloads/Seminario_Fuentes_Grupo_K/Datos_tic")
+leer_csvs_objetos("Datos_tic")
