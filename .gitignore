@@ -50,3 +50,6 @@ rsconnect/
 
 # Ignorar archivos de caché de RStudio
 FAB72B9B/
+
+# Ignorar cache de R Markdown / knitr
+shared/notebooks/
