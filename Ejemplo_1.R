@@ -1,3 +1,0 @@
-#ejemplo
-
-print("hiola")
