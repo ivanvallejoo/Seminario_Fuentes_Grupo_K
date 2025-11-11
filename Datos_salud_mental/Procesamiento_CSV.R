@@ -1,4 +1,4 @@
-lybrary(readr)
+library(readr)
 leer_mi_csv <- function(ruta_archivo, delimitador) {
   
   print(paste("Intentando cargar:", ruta_archivo, "con delimitador:", shQuote(delimitador)))
@@ -50,3 +50,4 @@ df_sintomas <- leer_mi_csv(
 )
 
 View(df_sintomas)
+
