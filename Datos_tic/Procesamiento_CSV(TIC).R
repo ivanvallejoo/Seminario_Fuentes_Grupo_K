@@ -1,30 +1,34 @@
 library(readr)
-library(janitor)
+library(dplyr)
+library(tools)
 
-leer_csvs_objetos <- function(directorio, patron = "\\.csv$") {
+
+leer_csvs_con_practica <- function(directorio, delim_fijo, patron = "\\.csv$") {
+  
+  
   archivos <- list.files(path = directorio, pattern = patron, full.names = TRUE)
   
+  lista_datos <- list()
+  
   for (archivo in archivos) {
+    
     nombre <- tools::file_path_sans_ext(basename(archivo))
     
-    primera_linea <- readLines(archivo, n = 1, encoding = "UTF-8")
-    posibles <- c(";", ",", "\t", "|")
-    cuenta <- sapply(posibles, function(d) stringi::stri_count_fixed(primera_linea, d))
-    delim_detectado <- posibles[which.max(cuenta)]
-
-    # Intentar primero con UTF-8, si falla probar con Latin1
     datos <- tryCatch(
-      read_delim(archivo, delim = delim_detectado, locale = locale(encoding = "UTF-8")),
+      read_delim(archivo, delim = delim_fijo, locale = locale(encoding = "UTF-8")),
       error = function(e) {
-        read_delim(archivo, delim = delim_detectado, locale = locale(encoding = "Latin1"))
+        read_delim(archivo, delim = delim_fijo, locale = locale(encoding = "Latin1"))
       }
     )
     
-    # Limpiar nombres de columnas con janitor::clean_names()
-    datos <- janitor::clean_names(datos)
+    colnames(datos) <- make.names(colnames(datos))
     
-    assign(nombre, datos, envir = .GlobalEnv)
+    lista_datos[[nombre]] <- datos
   }
+  
+  return(lista_datos)
 }
 
-leer_csvs_objetos("Datos_tic")
+mis_datos_tic<- leer_csvs_con_practica(directorio="Datos_TIC", delim_fijo = ";")
+
+View(mis_datos_tic)
