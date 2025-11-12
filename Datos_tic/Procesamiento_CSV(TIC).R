@@ -32,3 +32,4 @@ leer_csvs_con_practica <- function(directorio, delim_fijo, patron = "\\.csv$") {
 mis_datos_tic<- leer_csvs_con_practica(directorio="Datos_TIC", delim_fijo = ";")
 
 View(mis_datos_tic)
+ 
