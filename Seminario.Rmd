@@ -1,0 +1,51 @@
+---
+title: "Tecnología y Salud Mental"
+description: "Un Análisis con R sobre la correlación entre horas de pantalla y ansiedad."
+author: "Tu Nombre Completo"
+date: "`r format(Sys.Date(), '%d de %B de %Y')`"
+lang: "es"
+output:
+  distill::distill_article:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    css: "style.css"
+---
+
+```{r setup, include=FALSE}
+# Configuración global de los chunks de R
+knitr::opts_chunk$set(
+  echo = TRUE,      # Muestra el código por defecto
+  message = FALSE,  # Oculta mensajes
+  warning = FALSE   # Oculta advertencias
+)
+
+# Carga de paquetes
+library(dplyr)
+library(ggplot2)
+```
+## Introducción
+Este informe explora la correlación entre el uso de la tecnología, medido en horas de pantalla, y los resultados de salud mental, como las puntuaciones de ansiedad. Los datos se obtuvieron de una Encuesta Nacional de Salud hipotética.
+
+Usaremos R y el tidyverse para el `análisis`. La metodología se centrará en la limpieza de datos, la visualización exploratoria y un modelo de regresión simple.
+
+```{r}
+# Datos de ejemplo
+datos <- data.frame(
+  id = 1:150,
+  horas_pantalla = rnorm(150, mean = 6.5, sd = 2),
+  puntuacion_ansiedad = rnorm(150, mean = 10, sd = 4)
+)
+
+# Creamos una correlación ligera
+datos$puntuacion_ansiedad <- datos$puntuacion_ansiedad + (datos$horas_pantalla * 0.7) + rnorm(150, 0, 2)
+
+head(datos)
+ggplot(datos, aes(x = horas_pantalla, y = puntuacion_ansiedad)) +
+  geom_point(alpha = 0.7, color = "#4CAF50") + # Verde
+  geom_smooth(method = "lm", color = "#FF9800") + # Naranja
+  theme_minimal(base_size = 14) +
+  labs(title = "Horas de Pantalla vs. Puntuación de Ansiedad",
+       x = "Horas diarias de pantalla",
+       y = "Puntuación de Ansiedad")
+```
