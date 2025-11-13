@@ -94,7 +94,7 @@ adultos_y_mayores <- adultos_tabla %>%
 View(adultos_y_mayores)
 
 uso_tic_total<- adultos_y_mayores %>% 
-  left_join(niños_tabla_final, by = "Comunidad") %>% 
-  select(Comunidad, Frecuencia_Total_Niños, Frecuencia_Total_Adultos, Frecuencia_Total_ayores)
+  full_join(niños_tabla_final, by = "Comunidad") %>% 
+  select(Comunidad, Frecuencia_Total_Niños, Frecuencia_Total_Adultos, Frecuencia_Total_Mayores)
 
 View(uso_tic_total)

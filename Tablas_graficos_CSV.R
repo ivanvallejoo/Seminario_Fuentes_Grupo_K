@@ -1,6 +1,4 @@
 
-# --- 3. Cargar los datos ---
-mis_datos_salud_mental <- leer_csvs_con_practica(directorio="Datos_salud_mental", delim_fijo = ";")
 
 # --- 4. Preparación Gráfico 1 (Actividad) ---
 # Este usa 'Prevalencia.depresión'
@@ -15,7 +13,7 @@ datos_grafico_actividad <- mis_datos_salud_mental$depresion_actividad_economica 
     Prevalencia.depresión %in% c("Cuadro depresivo mayor", "Otros cuadros depresivos")
   )
 
-# --- 5. Gráfico 1 (Actividad) ---
+
 g_actividad_apilado <- ggplot(datos_grafico_actividad,
                               aes(x = reorder(Actividad.económica, Porcentaje), 
                                   y = Porcentaje, 
