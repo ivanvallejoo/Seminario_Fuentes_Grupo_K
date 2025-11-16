@@ -20,7 +20,7 @@ uso_frecuente <- c(
 )
 
 adultos_tabla<- uso_internet_com_adultos%>% 
-  filter(Clase.de.población == "Usuarios de Internet en los últimos 3 meses", 
+  filter(Clase.de.población == "Total personas (16 a 74 años)", 
          Frecuencia.de.uso %in% uso_frecuente,
          Comunidades.y.Ciudades.Autónomas!= "Total nacional") %>% 
   select(Comunidad = Comunidades.y.Ciudades.Autónomas,
@@ -38,7 +38,7 @@ View(adultos_tabla)
 
 
 mayores_tabla<- uso_internet_com_mayores %>% 
-  filter(Clase.de.población == "Usuarios de Internet en los últimos 3 meses (75 y más años)", 
+  filter(Clase.de.población == "Total personas (75 y más años)", 
          Frecuencia.de.uso %in% uso_frecuente,
          Comunidades.y.Ciudades.Autónomas!= "Total nacional") %>% 
   select(Comunidad = Comunidades.y.Ciudades.Autónomas,

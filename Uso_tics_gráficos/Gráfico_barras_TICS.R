@@ -2,6 +2,32 @@ library(tidyr)
 library(dplyr)  
 library(ggplot2)
 
+uso_tic_total_corregido <- uso_tic_total %>%
+  mutate(
+    Comunidad = case_when(
+      Comunidad == "Andalucía" ~ "Andalucía",
+      Comunidad == "Aragón" ~ "Aragón",
+      Comunidad == "Asturias, Principado de" ~ "Asturias",
+      Comunidad == "Balears, Illes" ~ "Baleares",
+      Comunidad == "Canarias" ~ "Canarias",
+      Comunidad == "Cantabria" ~ "Cantabria",
+      Comunidad == "Castilla y León" ~ "Castilla y León",
+      Comunidad == "Castilla - La Mancha" ~ "Castilla - La Mancha",
+      Comunidad == "Comunitat Valenciana" ~ "Comunidad Valenciana",
+      Comunidad == "Extremadura" ~ "Extremadura",
+      Comunidad == "Galicia" ~ "Galicia",
+      Comunidad == "Madrid, Comunidad de" ~ "Madrid",
+      Comunidad == "Murcia, Región de" ~ "Murcia",
+      Comunidad == "Navarra, Comunidad Foral de" ~ "Navarra",
+      Comunidad == "País Vasco" ~ "País Vasco",
+      Comunidad == "Rioja, La" ~ "La Rioja",
+      Comunidad == "Ceuta" ~ "Ceuta",
+      Comunidad == "Melilla" ~ "Melilla",
+      
+      TRUE ~ Comunidad
+    )
+  )
+
 View(uso_tic_total_corregido)
 
 uso_tic_total_pivotada<- uso_tic_total_corregido %>% 
