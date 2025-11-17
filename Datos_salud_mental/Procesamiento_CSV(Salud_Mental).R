@@ -1,10 +1,10 @@
-# --- 1. Carga de Librerías ---
+
 library(readr)
 library(dplyr)
 library(tools)
-library(ggplot2)
 
-# --- 2. Tu función para leer los CSV ---
+#Función para leer los CSV
+
 leer_csvs_con_practica <- function(directorio, delim_fijo, patron = "\\.csv$") {
   
   
