@@ -41,63 +41,50 @@ View(uso_tic_adultos)
 tabla_tics_depresion_comunidades<- uso_tic_adultos%>% 
   left_join(depresion_por_comunidades_corregido, by = "Comunidad")
 
+tabla_tics_depresion_comunidades$Porcentaje_depresion <- as.numeric( tabla_tics_depresion_comunidades$Porcentaje_depresion)
+
+
 View(tabla_tics_depresion_comunidades)
 
-#--- 0. CARGAR LIBRERÍAS ---
-library(dplyr)
-library(ggplot2)
-library(ggrepel) # (De tu práctica)
+ggplot(data = tabla_tics_depresion_comunidades, aes(x = Frecuencia_Total_Adultos, y = Porcentaje_depresion)) +
+  
+  geom_point(aes(colour = Comunidad), size = 3) +
 
-# (Asumimos que tu tabla 'tabla_maestra_final' ya existe)
-
-#--- 1. CREAR LOS TRAMOS (BAJO, MEDIO, ALTO) ---
-tabla_con_tramos <- tabla_tics_depresion_comunidades %>%
-  # (Quitamos NAs para que ntile funcione)
-  filter(!is.na(Frecuencia_Total_Adultos) & !is.na(Porcentaje_depresion)) %>%
+  geom_smooth(method = "lm", se = TRUE, color = "black", linetype = "dashed") +
   
-  # (Usamos 'mutate' y 'ntile' para crear 3 grupos)
-  mutate(
-    # ntile(columna, 3) crea 3 grupos (1, 2, 3) de tamaño similar
-    tramo_num = ntile(Frecuencia_Total_Adultos, 3),
-    
-    # (Usamos 'case_when' para ponerles etiquetas)
-    Tramos_de_Uso = case_when(
-      tramo_num == 1 ~ "Uso Bajo",
-      tramo_num == 2 ~ "Uso Medio",
-      tramo_num == 3 ~ "Uso Alto"
-    )
-  )
-#--- 2. CREAR EL GRÁFICO (CON REGRESIÓN POR TRAMOS) ---
-ggplot(tabla_con_tramos, 
-       aes(x = Frecuencia_Total_Adultos, y = Porcentaje_depresion)) +
+  geom_text_repel(aes(label = Comunidad), size = 3)+
   
-  # 1. Las Burbujas (geom_point)
-  #    X = TICs, Y = Depresión
-  #    TAMAÑO (size) = Desviación Estándar
-  #    COLOR = Tramos (Bajo, Medio, Alto)
-  geom_point(aes(color = Tramos_de_Uso, size = Desviacion_estandar_Adultos), alpha = 0.7) +
-  
-  # 2. Las Líneas de Regresión por Tramos (Tu idea)
-  #    (Usamos la idea de tu práctica)
-  geom_smooth(method = "lm", aes(color = Tramos_de_Uso), se = FALSE, na.rm = TRUE) + 
-  
-  # 3. Las Etiquetas (ggrepel)
-  geom_text_repel(aes(label = Comunidad), na.rm = TRUE) +
-  
-  # 4. Títulos (labs)
   labs(
-    title = "Correlación TICs vs. Depresión por Tramos de Uso",
-    subtitle = "El tamaño de la burbuja indica la variabilidad (Desv. Est.) del uso de TICs",
+    title = "Relación entre Frecuencia Total de Adultos y % de Depresión",
+    subtitle = "Línea de tendencia global",
+    x = "Frecuencia Total Adultos",
+    y = "Porcentaje de Depresión"
+  ) +  
+  guides(color= "none")+
+  
+  theme_minimal()
+
+ 
+  
+  ggplot(tabla_tics_depresion_comunidades, 
+         aes(x = Frecuencia_Total_Adultos, y = Porcentaje_depresion)) +
+  
+  geom_point(aes(size = Desviacion_estandar_Adultos, color = Comunidad), alpha = 0.7) +
+
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  
+  geom_text_repel(aes(label = Comunidad), size = 3) +
+  
+  labs(
+    title = "Correlación TICs vs Depresión (desv.estándar)",
+    subtitle = "El tamaño del punto indica la Desviación Estándar (variabilidad) del uso de TICs",
     x = "Uso Promedio de TICs (Adultos, %)",
-    y = "Prevalencia de Depresión (Cuadro mayor, %)",
-    color = "Tramos de Uso (Terciles)",
-    size = "Desv. Estándar de TICs"
+    y = "Prevalencia de Depresión (%)",
+    size = "Desviación Estándar"
   ) +
-
-  theme_classic()
-
-View(tabla_con_tramos)
-
+    
+  theme_classic() +
+  guides(color= "none", size = "legend")
 
 #CONCLUSIÓN de este gráfico, tendría q aparecer una linea de tendencia pero no aparece pq los datos no están lo suficientemente correlacionados
 #en nuestro gráfico de dispersión vemos que cad dato esta en unpunto bastante alejado poreque no hay una correlación entre la depresion y las tic

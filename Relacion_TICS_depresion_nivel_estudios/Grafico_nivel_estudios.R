@@ -1,5 +1,5 @@
 max_tics <- max(tabla_nivel_estudios_final$Porcentaje_TICS, na.rm = TRUE)
-max_depresion <- max(tabla_nivel_estudios$Porcentaje_Depresion, na.rm = TRUE)
+max_depresion <- max(tabla_nivel_estudios_final$Porcentaje_Depresion, na.rm = TRUE)
 factor_escala <- max_tics / max_depresion
 
 
