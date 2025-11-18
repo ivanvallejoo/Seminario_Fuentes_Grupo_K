@@ -32,7 +32,8 @@ adultos_tabla<- uso_internet_com_adultos%>%
                                            locale = locale(decimal_mark = ","))) %>% 
   group_by(Comunidad) %>% 
   summarise(
-    Frecuencia_Total_Adultos = mean(Porcentaje_adultos, na.rm = TRUE)
+    Frecuencia_Total_Adultos = mean(Porcentaje_adultos, na.rm = TRUE),
+    Desviacion_estandar_Adultos = sd(Porcentaje_adultos, na.rm = TRUE)
   )
 View(adultos_tabla)
 
@@ -50,7 +51,8 @@ mayores_tabla<- uso_internet_com_mayores %>%
                                            locale = locale(decimal_mark = ","))) %>% 
   group_by(Comunidad) %>% 
   summarise(
-    Frecuencia_Total_Mayores = mean(Porcentaje_mayores, na.rm=TRUE)
+    Frecuencia_Total_Mayores = mean(Porcentaje_mayores, na.rm=TRUE),
+    Desviacion_estandar_Mayores = sd(Porcentaje_mayores, na.rm = TRUE)
   )
 
 View(mayores_tabla)
