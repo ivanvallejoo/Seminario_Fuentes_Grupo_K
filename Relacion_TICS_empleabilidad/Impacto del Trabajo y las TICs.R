@@ -1,75 +1,99 @@
-# ==============================================================================
-# 0. CARGA DE LIBRERÍAS
-# ==============================================================================
-library(ggplot2)
-library(dplyr)
-library(stringr)
-library(ggthemes)  # Estilos visuales (FiveThirtyEight)
-library(ggtext)    # Títulos con formato HTML/Markdown
-library(ggrepel)   # Evitar solapamiento de etiquetas
-library(ggforce)   # Anotaciones inteligentes (elipses)
-library(patchwork) # Composición de múltiples gráficos
 
-# ==============================================================================
-# 1. PROCESAMIENTO DE DATOS: CONTEXTO (SALUD MENTAL)
-# ==============================================================================
+library(dplyr)
+library(readr)  # Para parse_number
+library(tidyr)
+library(ggplot2)
+
+View(mis_datos_salud_mental$depresion_actividad_economica)
 df_contexto <- mis_datos_salud_mental$depresion_actividad_economica %>%
-  rename(Sexo = 1, Actividad = 2, Tipo_Depresion = 3, Porcentaje = 4) %>%
-  # Filtro: Población general y casos graves de depresión
-  filter(Sexo == "Ambos sexos", 
-         Tipo_Depresion == "Cuadro depresivo mayor", 
-         Actividad != "TOTAL") %>%
+  
+  # 1. Renombrar usando nombres reales (Más seguro que el índice 1, 2...)
+  rename(
+    Actividad = `Actividad.económica`,
+    Tipo_Depresion = `Prevalencia.depresión`,
+    Porcentaje = Total
+  ) %>%
+  
+  # 2. Filtros estándar
+  filter(
+    Sexo == "Ambos sexos",
+    Tipo_Depresion == "Cuadro depresivo mayor",
+    Actividad != "TOTAL"
+  ) %>%
+  
   mutate(
-    Tasa_Depresion = as.numeric(gsub(",", ".", Porcentaje)),
+    # 3. ¡CORRECCIÓN CLAVE! Usamos parse_number (de tu práctica)
+    Tasa_Depresion = parse_number(Porcentaje, locale = locale(decimal_mark = ",")),
     
-    # Homologación de categorías para el cruce posterior
+    # 4. Usamos grepl() (R base) o igualdad exacta para homologar
     Clave_Union = case_when(
-      str_detect(Actividad, "Trabajando") ~ "Trabajando",
-      str_detect(Actividad, "desempleo") ~ "En desempleo",
-      str_detect(Actividad, "Estudiando") ~ "Estudiando",
-      str_detect(Actividad, "Jubilado") ~ "Jubilado/Pensionista",
-      str_detect(Actividad, "hogar") ~ "Labores del hogar",
-      str_detect(Actividad, "Incapacitado") ~ "Incapacitado",
+      Actividad == "Trabajando" ~ "Trabajando",
+      grepl("desempleo", Actividad) ~ "En desempleo", # grepl busca texto dentro
+      grepl("Estudiando", Actividad) ~ "Estudiando",
+      grepl("Jubilado", Actividad) ~ "Jubilado/Pensionista",
+      grepl("hogar", Actividad) ~ "Labores del hogar",
+      grepl("Incapacitado", Actividad) ~ "Incapacitado",
       TRUE ~ "Otros"
     ),
     
-    # Lógica visual: Destacamos "En desempleo" en color rojo
-    Color_Barra = ifelse(Clave_Union == "En desempleo", "#C0392B", "#95A5A6")
+    # 5. Lógica visual simple
+    Color_Barra = ifelse(Clave_Union == "En desempleo", "Destacado", "Normal")
   ) %>%
   select(Clave_Union, Actividad, Tasa_Depresion, Color_Barra)
 
 # ==============================================================================
-# 2. PROCESAMIENTO DE DATOS: EL GIRO (TICs)
+# 2. DATOS TIC (Uso de Internet)
 # ==============================================================================
+View(mis_datos_tic$uso_internet_socioeconomico)
+
+
+lista_frecuencias <- c(
+  "Han usado Internet diariamente (al menos 5 días a la semana)",
+  "Han utilizado internet varias veces al día"
+)
+
 df_tic_preparado <- mis_datos_tic$uso_internet_socioeconomico %>%
-  rename(Grupo = 1, Caracteristicas = 2, Frecuencia = 3, Total = 4) %>%
-  # Filtro: Nos interesa el uso intensivo (diario)
-  filter(Grupo == "Total de personas (16 a 74 años)", 
-         str_detect(Frecuencia, "diariamente")) %>%
-  mutate(
-    Tasa_Internet = as.numeric(gsub(",", ".", Total)),
+  
+  # 1. Renombrar usando los nombres que genera make.names (sin tildes)
+  rename(
+    Grupo = Clase.de.población, 
+    Características = Características.socioeconómicas, 
+    Frecuencia = Frecuencia.de.uso, 
+    Total_TIC = Total
+  ) %>%
+  
+  # 2. Filtros (usando grepl para buscar "diariamente")
+  filter(
+    Grupo == "Total de personas (16 a 74 años)",
+    Frecuencia %in% lista_frecuencias
     
-    # Homologación: Traducimos categorías TIC al lenguaje de Salud
+  ) %>%
+  
+  mutate(
+    # 3. Usamos parse_number otra vez
+    Tasa_Internet = parse_number(Total_TIC, locale = locale(decimal_mark = ",")),
+    
+    # 4. Homologación con grepl (equivalente a str_detect)
     Clave_Union = case_when(
-      str_detect(Caracteristicas, "ocupados") ~ "Trabajando",
-      str_detect(Caracteristicas, "parados") ~ "En desempleo",
-      str_detect(Caracteristicas, "Estudiantes") ~ "Estudiando",
-      str_detect(Caracteristicas, "Pensionistas") ~ "Jubilado/Pensionista",
-      str_detect(Caracteristicas, "hogar") ~ "Labores del hogar",
+      Características == "Situación laboral: Activos ocupados" ~ "Trabajando",
+      Características == "Situación laboral: Activos parados" ~ "En desempleo",
+      Características == "Situación laboral: Inactivos: Estudiantes" ~ "Estudiando",
+      Características == "Situación laboral: Inactivos: Pensionistas" ~ "Jubilado/Pensionista",
+      Características == "Situación laboral: Inactivos: Labores del hogar" ~ "Labores del hogar",
       TRUE ~ "Otros"
     )
   ) %>%
+  
+  # 5. Agrupar y Resumir
   group_by(Clave_Union) %>%
   summarise(Tasa_Internet = mean(Tasa_Internet, na.rm = TRUE))
 
+View(df_tic_preparado)
 # ==============================================================================
-# 3. UNIÓN DE TABLAS (DATA MERGING)
+# 3. UNIÓN FINAL
 # ==============================================================================
-# Cruzamos ambas bases usando la 'Clave_Union' como puente
 df_final_narrativa <- left_join(df_contexto, df_tic_preparado, by = "Clave_Union") %>%
-  filter(!is.na(Tasa_Internet))
+  filter(!is.na(Tasa_Internet)) %>% 
+  select(Clave_Union, Tasa_Depresion, Tasa_Internet, Color_Barra)
 
-print("Datos unificados correctamente:")
-print(head(df_final_narrativa))
-
-
+View(df_final_narrativa)

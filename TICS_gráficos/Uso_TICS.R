@@ -19,47 +19,66 @@ uso_frecuente <- c(
   "Han utilizado internet varias veces al día"
 )
 
-adultos_tabla<- uso_internet_com_adultos%>% 
-  filter(Clase.de.población == "Total personas (16 a 74 años)", 
-         Frecuencia.de.uso %in% uso_frecuente,
-         Comunidades.y.Ciudades.Autónomas!= "Total nacional") %>% 
-  select(Comunidad = Comunidades.y.Ciudades.Autónomas,
-         Frecuencia = Frecuencia.de.uso,
-         Tipo_poblacion_adultos = Clase.de.población,
-         Porcentaje_adultos = Total
-         ) %>% 
-  mutate(Porcentaje_adultos = parse_number(Porcentaje_adultos, 
-                                           locale = locale(decimal_mark = ","))) %>% 
-  group_by(Comunidad) %>% 
-  summarise(
-    Frecuencia_Total_Adultos = mean(Porcentaje_adultos, na.rm = TRUE),
-    Desviacion_estandar_Adultos = sd(Porcentaje_adultos, na.rm = TRUE)
+
+
+library(dplyr)
+library(readr)
+
+
+limpiar_y_resumir_tic <- function(csv_tic, tipo_poblacion, uso_frecuente) {
+  
+  datos_limpios <- csv_tic %>%
+    filter(
+      # Usamos el nombre "limpio" (sin tilde) que genera R
+      Clase.de.población == tipo_poblacion,
+      Frecuencia.de.uso %in% uso_frecuente,
+      Comunidades.y.Ciudades.Autónomas != "Total nacional"
+    ) %>%
+    select(
+      Comunidad = Comunidades.y.Ciudades.Autónomas,
+      Porcentaje = Total
+    ) %>%
+    mutate(
+      Porcentaje = parse_number(Porcentaje, locale = locale(decimal_mark = ","))
+    ) %>%
+    group_by(Comunidad) %>%
+    summarise(
+      Frecuencia_Total = mean(Porcentaje, na.rm = TRUE),
+      Desviacion_Estandar = sd(Porcentaje, na.rm = TRUE)
+    )
+  
+  return(datos_limpios)
+}
+
+
+adultos_tabla <- limpiar_y_resumir_tic(
+  csv_tic = mis_datos_tic$uso_internet_comunidades_adultos,
+  tipo_poblacion = "Total personas (16 a 74 años)",
+  uso_frecuente = uso_frecuente #vector creado arriba
+) %>%
+  
+  rename(
+    Frecuencia_Total_Adultos = Frecuencia_Total,
+    Desviacion_Estandar_Adultos = Desviacion_Estandar
   )
+
+
+mayores_tabla <- limpiar_y_resumir_tic(
+  csv_tic = mis_datos_tic$uso_internet_comunidades_mayores, 
+  tipo_poblacion = "Total personas (75 y más años)",
+  uso_frecuente = uso_frecuente
+) %>%
+  rename(
+    Frecuencia_Total_Mayores = Frecuencia_Total,
+    Desviacion_Estandar_Mayores = Desviacion_Estandar
+  )
+
 View(adultos_tabla)
-
-
-mayores_tabla<- uso_internet_com_mayores %>% 
-  filter(Clase.de.población == "Total personas (75 y más años)", 
-         Frecuencia.de.uso %in% uso_frecuente,
-         Comunidades.y.Ciudades.Autónomas!= "Total nacional") %>% 
-  select(Comunidad = Comunidades.y.Ciudades.Autónomas,
-         Frecuencia = Frecuencia.de.uso,
-         Tipo_poblacion_mayores = Clase.de.población,
-         Porcentaje_mayores = Total
-         ) %>% 
-  mutate(Porcentaje_mayores = parse_number(Porcentaje_mayores, 
-                                           locale = locale(decimal_mark = ","))) %>% 
-  group_by(Comunidad) %>% 
-  summarise(
-    Frecuencia_Total_Mayores = mean(Porcentaje_mayores, na.rm=TRUE),
-    Desviacion_estandar_Mayores = sd(Porcentaje_mayores, na.rm = TRUE)
-  )
-
 View(mayores_tabla)
 
 niños_tabla<- uso_internet_com_niños %>% 
   filter(Principales.variables!= "Total Niños (10-15 años)",
-,         Comunidades.y.Ciudades.Autónomas!= "Total nacional") %>% 
+         Comunidades.y.Ciudades.Autónomas!= "Total nacional") %>% 
   select(Comunidad = Comunidades.y.Ciudades.Autónomas,
          Tipo_poblacion_niños = Principales.variables,
          Porcentaje_niños = Total) %>% 

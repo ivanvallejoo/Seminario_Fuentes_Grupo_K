@@ -1,7 +1,6 @@
 library(dplyr)
 library(ggplot2)
 library(ggrepel)
- #Viene de gráfico de barras tic
 
 
 

@@ -6,6 +6,8 @@ library(mapSpain)
 
 mapa_españa_ccaa <- esp_get_ccaa(moveCAN = TRUE)
 
+View(mapa_españa_ccaa)
+
 uso_tic_total_corregido <- uso_tic_total %>%
   mutate(
     Comunidad = case_when(
@@ -33,11 +35,11 @@ uso_tic_total_corregido <- uso_tic_total %>%
   )
 
 View(uso_tic_total)
-# 2. Vuelve a realizar el join usando la tabla CORREGIDA:
+
 mapa_con_datos <- mapa_españa_ccaa %>%
   left_join(uso_tic_total_corregido, by = c("ccaa.shortname.es" = "Comunidad"))
 View(mapa_con_datos)
-# 3. Preparación de la etiqueta personalizada (tooltip)
+
 mapa_con_datos <- mapa_con_datos %>%
   mutate(
     tooltip_data = paste0(
@@ -49,7 +51,6 @@ mapa_con_datos <- mapa_con_datos %>%
   )
 
 colores_ccaa <- c(
-  # Comunidades Autónomas
   "Andalucía" = "#C0C0C0",           
   "Aragón" = "#FFD700",              
   "Asturias" = "#0000FF",            
@@ -75,16 +76,12 @@ colores_ccaa <- c(
 
 mapa_estatico_gg <- ggplot(data = mapa_con_datos) +
   
-  # CAPA 1: Geometrías del mapa y datos interactivos (el tooltip)
   geom_sf(
-    # 'text' es el aesthetic que usa ggplotly para el tooltip de datos.
     aes(fill = ccaa.shortname.es, text = tooltip_data, key = ccaa.shortname.es),
     color = NA, 
     size = 0 
   ) +
   
-  # CAPA 2: Nombres fijos en el centro de los polígonos
-  # NO incluimos ningún aesthetic 'text' o 'label' para evitar tooltips duplicados aquí.
   geom_sf_text(
     aes(label = ccaa.shortname.es), 
     color = "black", 
@@ -96,20 +93,14 @@ mapa_estatico_gg <- ggplot(data = mapa_con_datos) +
   theme(legend.position = "none")
 
 
-# 2. Convertimos el objeto ggplot en un objeto plotly
 mapa_interactivo_gg <- ggplotly(
   mapa_estatico_gg,
-  # Solo incluimos el 'text' (nuestra etiqueta de datos) en el tooltip
   tooltip = "text" 
 )
 
-# 3. Aplicamos el estilo de Plotly para lograr los efectos deseados
 mapa_interactivo_final <- mapa_interactivo_gg %>%
-  # CAMBIO A: Activa el hover en el relleno ('fills') para que el tooltip salte en el área.
-  # El traces = 1 aplica esto a la capa geom_sf (el mapa).
   style(hoveron = "fills", traces = 1) %>% 
-  
-  # CAMBIO B: Aplica el estilo blanco al tooltip (etiqueta)
+
   layout(
     hoverlabel = list(
       bgcolor = "white",
