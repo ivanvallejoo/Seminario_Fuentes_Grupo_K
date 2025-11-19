@@ -27,3 +27,4 @@ tabla_nivel_estudios_separada <- nivel_estudios_parseado %>%
 
 
 View(tabla_nivel_estudios_separada)
+
