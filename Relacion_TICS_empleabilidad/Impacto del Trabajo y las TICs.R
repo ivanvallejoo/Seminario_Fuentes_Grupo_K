@@ -27,12 +27,9 @@ df_contexto <- mis_datos_salud_mental$depresion_actividad_economica %>%
     
     # 4. Usamos grepl() (R base) o igualdad exacta para homologar
     Clave_Union = case_when(
-      Actividad == "Trabajando" ~ "Trabajando",
-      grepl("desempleo", Actividad) ~ "En desempleo", # grepl busca texto dentro
-      grepl("Estudiando", Actividad) ~ "Estudiando",
-      grepl("Jubilado", Actividad) ~ "Jubilado/Pensionista",
-      grepl("hogar", Actividad) ~ "Labores del hogar",
-      grepl("Incapacitado", Actividad) ~ "Incapacitado",
+      Actividad == "Jubilado/a o prejubilado/a" ~ "Jubilado/Pensionista",
+      Actividad == "Labores del hogar" ~ "Labores del hogar",
+      Actividad == "Incapacitado/a para trabajar" ~ "Incapacitado",
       TRUE ~ "Otros"
     ),
     
