@@ -37,7 +37,7 @@ df_contexto <- mis_datos_salud_mental$depresion_actividad_economica %>%
     ),
     
     # 5. Lógica visual simple
-    Color_Barra = ifelse(Clave_Union == "En desempleo", "Destacado", "Normal")
+    Color_Barra = ifelse(Clave_Union == "En desempleo", "#C0392B", "#95A5A6")
   ) %>%
   select(Clave_Union, Actividad, Tasa_Depresion, Color_Barra)
 
@@ -84,7 +84,7 @@ df_tic_preparado <- mis_datos_tic$uso_internet_socioeconomico %>%
     )
   ) %>%
   
-  # 5. Agrupar y Resumir
+  
   group_by(Clave_Union) %>%
   summarise(Tasa_Internet = mean(Tasa_Internet, na.rm = TRUE))
 
@@ -92,8 +92,8 @@ View(df_tic_preparado)
 # ==============================================================================
 # 3. UNIÓN FINAL
 # ==============================================================================
-df_final_narrativa <- left_join(df_contexto, df_tic_preparado, by = "Clave_Union") %>%
+df_final<- left_join(df_contexto, df_tic_preparado, by = "Clave_Union") %>%
   filter(!is.na(Tasa_Internet)) %>% 
   select(Clave_Union, Tasa_Depresion, Tasa_Internet, Color_Barra)
 
-View(df_final_narrativa)
+View(df_final)

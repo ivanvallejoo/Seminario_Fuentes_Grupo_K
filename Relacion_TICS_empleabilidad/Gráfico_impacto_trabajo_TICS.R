@@ -1,5 +1,13 @@
+library(stringr)
+library(ggthemes)  # Estilos visuales (FiveThirtyEight)
+library(ggtext)    # Títulos con formato HTML/Markdown
+library(ggrepel)   # Evitar solapamiento de etiquetas
+library(ggforce)   # Anotaciones inteligentes (elipses)
+library(patchwork) # Composición de múltiples gráficos
+library(ggplot2)
+
 # ==============================================================================
-# 4. GRÁFICO 1 (EL CONTEXTO)
+# 4. VISUALIZACIÓN: GRÁFICO 1 (EL CONTEXTO)
 # ==============================================================================
 g1 <- ggplot(df_contexto, aes(x = reorder(Actividad, -Tasa_Depresion), y = Tasa_Depresion)) +
   # Barras con color condicional (Rojo para desempleo)
@@ -33,9 +41,9 @@ g1 <- ggplot(df_contexto, aes(x = reorder(Actividad, -Tasa_Depresion), y = Tasa_
   )
 
 # ==============================================================================
-# 5. GRÁFICO 2 
+# 5. VISUALIZACIÓN: GRÁFICO 2 (EL GIRO)
 # ==============================================================================
-g2 <- ggplot(df_final, aes(x = Tasa_Internet, y = Tasa_Depresion)) +
+g2 <- ggplot(df_final_narrativa, aes(x = Tasa_Internet, y = Tasa_Depresion)) +
   # Línea de tendencia
   geom_smooth(method = "lm", se = FALSE, color = "aquamarine1", linetype = "solid", size = 1) +
   
@@ -76,7 +84,7 @@ g2 <- ggplot(df_final, aes(x = Tasa_Internet, y = Tasa_Depresion)) +
   )
 
 # ==============================================================================
-# 6. COMPOSICIÓN FINAL
+# 6. COMPOSICIÓN FINAL (PATCHWORK)
 # ==============================================================================
 layout_final <- g1 + g2 + 
   plot_annotation(
