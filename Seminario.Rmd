@@ -98,3 +98,34 @@ g_actividad_apilado <- ggplot(datos_grafico_actividad,
 print(g_actividad_apilado)
 ```
 *Intensidad de la Depresión por Edad*
+Analizamos la gravedad de los síntomas a lo largo del ciclo vital.
+```{r}
+# Código extraído de: Tablas_graficos_CSV.R
+
+datos_grafico_edad <- mis_datos_salud_mental$depresion_sexo_y_grupo_de_edad %>%
+  rename(Porcentaje = Total) %>% 
+  mutate(Porcentaje = as.numeric(sub(",", ".", Porcentaje, fixed = TRUE))) %>%
+  filter(
+    Sexo != "Ambos sexos",
+    Edad != "TOTAL", 
+    `Intensidad.depresión` %in% c("Leve", "Moderada", "Moderadamente grave", "Grave")
+  )
+
+g_edad_apilado <- ggplot(datos_grafico_edad,
+                         aes(x = Edad, 
+                             y = Porcentaje, 
+                             fill = `Intensidad.depresión`)) +
+  geom_col() + 
+  facet_wrap(~ Sexo) + 
+  labs(
+    title = "Intensidad de Depresión por Edad y Sexo",
+    subtitle = "Mostrando niveles de 'Leve' a 'Grave' apilados",
+    x = "Grupo de Edad",
+    y = "Porcentaje Total de Prevalencia (%)",
+    fill = "Intensidad"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+
+print(g_edad_apilado)
+```
