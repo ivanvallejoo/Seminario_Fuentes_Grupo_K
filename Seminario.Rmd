@@ -61,5 +61,40 @@ Para ello, hemos procesado datos de la Encuesta Europea de Salud y la Encuesta T
 ## 2. Contexto de Salud Mental
 Analizamos la prevalencia de depresión utilizando los gráficos generados en tus scripts de procesamiento de CSV y JSON.
 
-Depresión por Actividad Económica y Sexo
+*Depresión por Actividad Económica y Sexo*
 Visualizamos el impacto del desempleo diferenciando entre "Cuadro depresivo mayor" y otros cuadros.
+
+```{r}
+# Código extraído de: Tablas_graficos_CSV.R
+
+# Preparación (si no viniera del RData)
+datos_grafico_actividad <- mis_datos_salud_mental$depresion_actividad_economica %>%
+  rename(Porcentaje = Total) %>% 
+  mutate(Porcentaje = as.numeric(sub(",", ".", Porcentaje, fixed = TRUE))) %>%
+  filter(
+    Sexo != "Ambos sexos",
+    `Actividad.económica` != "TOTAL",        
+    `Prevalencia.depresión` %in% c("Cuadro depresivo mayor", "Otros cuadros depresivos")
+  )
+
+# Gráfico
+g_actividad_apilado <- ggplot(datos_grafico_actividad,
+                              aes(x = reorder(`Actividad.económica`, Porcentaje), 
+                                  y = Porcentaje, 
+                                  fill = `Prevalencia.depresión`)) +
+  geom_col() + 
+  facet_wrap(~ Sexo) + 
+  coord_flip() + 
+  labs(
+    title = "Depresión por Actividad Económica y Sexo",
+    subtitle = "Mostrando 'Cuadro depresivo mayor' y 'Otros cuadros depresivos'",
+    x = "Actividad Económica",
+    y = "Porcentaje Total de Prevalencia (%)",
+    fill = "Prevalencia"
+  ) +
+  scale_fill_brewer(palette = "Reds") +
+  theme_minimal()
+
+print(g_actividad_apilado)
+```
+*Intensidad de la Depresión por Edad*
