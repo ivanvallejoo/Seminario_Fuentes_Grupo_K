@@ -2,7 +2,7 @@
 title: "Tecnología y Salud Mental"
 description: "Un Análisis con R sobre la correlación entre horas de pantalla y ansiedad."
 author: "Tu Nombre Completo"
-date: "`r format(Sys.Date(), '%d de %B de %Y')`"
+date: "`r Sys.Date()`"
 lang: "es"
 output:
   distill::distill_article:
@@ -13,39 +13,53 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-# Configuración global de los chunks de R
+# --- 1. CONFIGURACIÓN GLOBAL Y LIBRERÍAS ---
 knitr::opts_chunk$set(
-  echo = TRUE,      # Muestra el código por defecto
-  message = FALSE,  # Oculta mensajes
-  warning = FALSE   # Oculta advertencias
+  echo = TRUE,       
+  warning = FALSE,   
+  message = FALSE,   
+  fig.align = "center",
+  out.width = "100%",
+  layout="l-body-outset"
 )
 
-# Carga de paquetes
+# Librerías utilizadas en tus scripts
+library(tidyverse)
 library(dplyr)
+library(readr)
+library(tidyr)
 library(ggplot2)
+library(ggthemes)
+library(ggtext)
+library(ggrepel)
+library(ggforce)
+library(patchwork)
+library(sf)
+library(mapSpain)
+library(plotly)
+library(jsonlite)
+library(stringr)
+
+# Carga de datos (Usamos el entorno total para asegurar que las variables existen)
+if(file.exists("Enviroment_total.RData")) {
+  load("Enviroment_total.RData")
+} else {
+  warning("AVISO: No se encontró 'Enviroment_total.RData'.")
+}
 ```
-## Introducción
-Este informe explora la correlación entre el uso de la tecnología, medido en horas de pantalla, y los resultados de salud mental, como las puntuaciones de ansiedad. Los datos se obtuvieron de una Encuesta Nacional de Salud hipotética.
+## 1. Introducción
+En este seminario analizamos cómo factores estructurales y tecnológicos impactan en la salud mental en España. Nos centramos en tres dimensiones:
 
-Usaremos R y el tidyverse para el `análisis`. La metodología se centrará en la limpieza de datos, la visualización exploratoria y un modelo de regresión simple.
+Contexto de Salud Mental: ¿Quiénes sufren más depresión?
 
-```{r}
-# Datos de ejemplo
-datos <- data.frame(
-  id = 1:150,
-  horas_pantalla = rnorm(150, mean = 6.5, sd = 2),
-  puntuacion_ansiedad = rnorm(150, mean = 10, sd = 4)
-)
+Contexto Tecnológico: ¿Cómo es la brecha digital por edad y territorio?
 
-# Creamos una correlación ligera
-datos$puntuacion_ansiedad <- datos$puntuacion_ansiedad + (datos$horas_pantalla * 0.7) + rnorm(150, 0, 2)
+Interacción: ¿Cómo se relacionan estos factores (Empleo, Educación y Territorio) con el bienestar psicológico?
 
-head(datos)
-ggplot(datos, aes(x = horas_pantalla, y = puntuacion_ansiedad)) +
-  geom_point(alpha = 0.7, color = "#4CAF50") + # Verde
-  geom_smooth(method = "lm", color = "#FF9800") + # Naranja
-  theme_minimal(base_size = 14) +
-  labs(title = "Horas de Pantalla vs. Puntuación de Ansiedad",
-       x = "Horas diarias de pantalla",
-       y = "Puntuación de Ansiedad")
-```
+Para ello, hemos procesado datos de la Encuesta Europea de Salud y la Encuesta TIC del INE utilizando R.
+
+## 2. Contexto de Salud Mental
+Analizamos la prevalencia de depresión utilizando los gráficos generados en tus scripts de procesamiento de CSV y JSON.
+
+Depresión por Actividad Económica y Sexo
+Visualizamos el impacto del desempleo diferenciando entre "Cuadro depresivo mayor" y otros cuadros.
