@@ -67,7 +67,7 @@ g2 <- ggplot(df_final_narrativa, aes(x = Tasa_Internet, y = Tasa_Depresion)) +
   scale_fill_tableau() +
   labs(
     title = "<span style='font-size:14pt'>2. El Giro (TICs)</span>",
-    subtitle = "Alta tecnología no garantiza salud mental: comparar <b style='color:#F28E2B'>Estudiantes</b> vs <b style='color:#E15759'>Parados</b>.",
+    subtitle = "Alta tecnología no garantiza salud mental: comparar <b style='color:#F28E2B'>Estudiantes</b> vs <b style='color:#094B5B'>Parados</b>.",
     x = "Uso Diario de Internet (%)", 
     y = "Depresión Mayor (%)",
     caption = "Fuente: Elaboración propia con datos INE"
@@ -95,3 +95,4 @@ layout_final <- g1 + g2 +
 
 # Mostrar resultado final
 print(layout_final)
+

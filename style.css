@@ -1,48 +1,28 @@
-/* --- Importar Fuentes Modernas --- */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400;600&display=swap');
+/* 1. Importar las fuentes desde Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400&display=swap');
 
-/* * La forma correcta de personalizar Distill es 
- * sobrescribir sus variables de CSS.
- */
-:root {
-  /* --- COLORES PRINCIPALES --- */
-  
-  /* Cambia el azul por defecto por un verde azulado (teal) */
-  --distill-primary-color: #008080; 
-  
-  /* Un gris oscuro para el texto, más suave que el negro */
-  --distill-text-color: #333333;
-  
-  /* Un blanco "roto" (off-white) para el fondo */
-  --distill-background-color: #fcfcfc;
-
-  /* --- CABECERA DEL ARTÍCULO --- */
-  /* Un fondo gris muy claro para el bloque del título/autor */
-  --distill-header-background-color: #f5f5f5;
-
-  /* --- BLOQUES DE CÓDIGO --- */
-  --distill-code-background-color: #f8f9fa;
-  --distill-code-color: #c82c6b; /* Un magenta para el código */
-}
-
-/* --- FUENTES --- */
-/* Sobrescribir las fuentes por defecto */
+/* 2. Estilos del Cuerpo (Body) */
 body {
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
+  font-size: 15px;
+  line-height: 1.6;         
+  color: #333333;             
+  text-align: justify;        
+  background-color: #f4f6f7;
 }
 
-h1, h2, h3, h4, h5, h6 {
+/* 3. Estilos de los Títulos (H1 - H6) */
+h1, h2, h3 {
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
+  color: #2c3e50;             
+  margin-top: 1.5em;          
 }
 
-/* --- ESTILO ADICIONAL: Citas (Blockquotes) --- */
-blockquote {
-  /* Usa el color primario que definimos arriba */
-  border-left: 4px solid var(--distill-primary-color);
-  background-color: #f8f9fa;
-  color: #555;
-  padding: 15px;
-  border-radius: 4px;
+/* 4. AJUSTE DE ANCHO */
+.main-container {
+    max-width: 1200px; 
+    margin-left: auto;
+    margin-right: auto;
 }

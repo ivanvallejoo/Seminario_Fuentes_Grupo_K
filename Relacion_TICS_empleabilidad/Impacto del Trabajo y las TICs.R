@@ -1,4 +1,3 @@
-
 library(dplyr)
 library(readr)  # Para parse_number
 library(tidyr)
@@ -6,37 +5,31 @@ library(ggplot2)
 
 View(mis_datos_salud_mental$depresion_actividad_economica)
 df_contexto <- mis_datos_salud_mental$depresion_actividad_economica %>%
-  
-  # 1. Renombrar usando nombres reales (Más seguro que el índice 1, 2...)
   rename(
     Actividad = `Actividad.económica`,
     Tipo_Depresion = `Prevalencia.depresión`,
     Porcentaje = Total
   ) %>%
-  
-  # 2. Filtros estándar
   filter(
     Sexo == "Ambos sexos",
     Tipo_Depresion == "Cuadro depresivo mayor",
     Actividad != "TOTAL"
   ) %>%
-  
   mutate(
-    # 3. ¡CORRECCIÓN CLAVE! Usamos parse_number (de tu práctica)
     Tasa_Depresion = parse_number(Porcentaje, locale = locale(decimal_mark = ",")),
-    
-    # 4. Usamos grepl() (R base) o igualdad exacta para homologar
     Clave_Union = case_when(
+      # Intentamos capturar variantes comunes por si acaso
+      Actividad %in% c("Parado/a", "Parados", "En desempleo", "Desempleado") ~ "En desempleo",
       Actividad == "Jubilado/a o prejubilado/a" ~ "Jubilado/Pensionista",
       Actividad == "Labores del hogar" ~ "Labores del hogar",
       Actividad == "Incapacitado/a para trabajar" ~ "Incapacitado",
       TRUE ~ "Otros"
-    ),
+    )
+  )
     
-    # 5. Lógica visual simple
-    Color_Barra = ifelse(Clave_Union == "En desempleo", "#C0392B", "#95A5A6")
-  ) %>%
-  select(Clave_Union, Actividad, Tasa_Depresion, Color_Barra)
+    # Lógica visual simple
+df_contexto <- df_contexto %>%
+  mutate(Color_Barra = ifelse(Tasa_Depresion == max(Tasa_Depresion, na.rm=TRUE), "#C0392B", "#95A5A6"))
 
 # ==============================================================================
 # 2. DATOS TIC (Uso de Internet)
