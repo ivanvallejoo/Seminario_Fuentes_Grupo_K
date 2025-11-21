@@ -62,6 +62,7 @@ Para ello, hemos procesado datos de la Encuesta Europea de Salud y la Encuesta T
 Analizamos la prevalencia de depresión utilizando los gráficos generados en tus scripts de procesamiento de CSV y JSON.
 
 *Depresión por Actividad Económica y Sexo*
+
 Visualizamos el impacto del desempleo diferenciando entre "Cuadro depresivo mayor" y otros cuadros.
 
 ```{r}
@@ -98,6 +99,7 @@ g_actividad_apilado <- ggplot(datos_grafico_actividad,
 print(g_actividad_apilado)
 ```
 *Intensidad de la Depresión por Edad*
+
 Analizamos la gravedad de los síntomas a lo largo del ciclo vital.
 ```{r}
 # Código extraído de: Tablas_graficos_CSV.R
@@ -128,4 +130,284 @@ g_edad_apilado <- ggplot(datos_grafico_edad,
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
 
 print(g_edad_apilado)
+```
+## 3. Contexto de Uso de TICs
+
+A continuación, establecemos el perfil tecnológico de España, observando la brecha generacional en las distintas Comunidades Autónomas.
+```{r}
+# Código extraído de: Gráfico_barras_TICS.R
+
+# Corrección y limpieza de nombres de comunidad para el gráfico
+uso_tic_total_corregido <- uso_tic_total %>%
+  mutate(
+    Comunidad = case_when(
+      Comunidad == "Andalucía" ~ "Andalucía",
+      Comunidad == "Aragón" ~ "Aragón",
+      Comunidad == "Asturias, Principado de" ~ "Asturias",
+      Comunidad == "Balears, Illes" ~ "Baleares",
+      Comunidad == "Canarias" ~ "Canarias",
+      Comunidad == "Cantabria" ~ "Cantabria",
+      Comunidad == "Castilla y León" ~ "Castilla y León",
+      Comunidad == "Castilla - La Mancha" ~ "Castilla - La Mancha",
+      Comunidad == "Comunitat Valenciana" ~ "Comunidad Valenciana",
+      Comunidad == "Extremadura" ~ "Extremadura",
+      Comunidad == "Galicia" ~ "Galicia",
+      Comunidad == "Madrid, Comunidad de" ~ "Madrid",
+      Comunidad == "Murcia, Región de" ~ "Murcia",
+      Comunidad == "Navarra, Comunidad Foral de" ~ "Navarra",
+      Comunidad == "País Vasco" ~ "País Vasco",
+      Comunidad == "Rioja, La" ~ "La Rioja",
+      Comunidad == "Ceuta" ~ "Ceuta",
+      Comunidad == "Melilla" ~ "Melilla",
+      TRUE ~ Comunidad
+    )
+  )
+
+# Pivotaje a formato largo para ggplot
+uso_tic_total_pivotada <- uso_tic_total_corregido %>% 
+  pivot_longer(
+    cols= -Comunidad,
+    names_to = "Grupo_Edad",
+    values_to = "Frecuencia_Total"
+  )
+
+orden_grupos <- c("Frecuencia_Total_Niños", "Frecuencia_Total_Adultos", "Frecuencia_Total_Mayores")
+
+uso_tic_ordenada <- uso_tic_total_pivotada %>% 
+  mutate(Grupo_Edad = factor(Grupo_Edad, levels = orden_grupos))
+
+# Gráfico de Barras
+ggplot(uso_tic_ordenada, aes(x=Comunidad, y=Frecuencia_Total, fill=Grupo_Edad))+
+  geom_bar(stat = "identity", position = "dodge")+
+  labs(
+    title= "Perfil de Uso Frecuente de las TIC por Edad y Comunidad",
+    y= "Porcentaje de Uso Promedio(%)",
+    x= "Comunidad Autónoma",
+    fill = "Grupo de Edad")+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+```
+## 4. Relación TICs con Depresión por Comunidades
+¿Cómo se distribuye geográficamente el uso de tecnología? Utilizamos un mapa interactivo para explorar los datos territoriales.
+```{r}
+# Código extraído de: Mapa_España_TICS.R
+
+mapa_españa_ccaa <- esp_get_ccaa(moveCAN = TRUE)
+
+# Corrección de nombres para el join con el mapa
+uso_tic_total_corregido_mapa <- uso_tic_total %>%
+  mutate(
+    Comunidad = case_when(
+      Comunidad == "Balears, Illes" ~ "Baleares",
+      Comunidad == "Castilla - La Mancha" ~ "Castilla-La Mancha",
+      Comunidad == "Comunitat Valenciana" ~ "Comunidad Valenciana",
+      Comunidad == "Madrid, Comunidad de" ~ "Madrid",
+      Comunidad == "Murcia, Región de" ~ "Murcia",
+      Comunidad == "Navarra, Comunidad Foral de" ~ "Navarra",
+      Comunidad == "Rioja, La" ~ "La Rioja",
+      TRUE ~ Comunidad
+    )
+  )
+
+mapa_con_datos <- mapa_españa_ccaa %>%
+  left_join(uso_tic_total_corregido_mapa, by = c("ccaa.shortname.es" = "Comunidad"))
+
+# Preparación del tooltip interactivo
+mapa_con_datos <- mapa_con_datos %>%
+  mutate(
+    tooltip_data = paste0(
+      'Comunidad Autónoma: ', ccaa.shortname.es, "<br>", 
+      "Uso Adultos: ", round(Frecuencia_Total_Adultos, 2), "%<br>",
+      "Uso Niños: ", round(Frecuencia_Total_Niños, 2), "%<br>",
+      "Uso Mayores: ", round(Frecuencia_Total_Mayores, 2), "%"
+    )
+  )
+
+colores_ccaa <- c(
+  "Andalucía" = "#C0C0C0", "Aragón" = "#FFD700", "Asturias" = "#0000FF",            
+  "Baleares" = "#800080", "Canarias" = "#FFA500", "Cantabria" = "#008000",           
+  "Castilla y León" = "#B0C4DE", "Castilla-La Mancha" = "#FF0000",
+  "Comunidad Valenciana" = "#ADD8E6", "Extremadura" = "#8B4513",         
+  "Galicia" = "#40E0D0", "Madrid" = "#FFFF00", "Murcia" = "#FFC0CB",              
+  "Navarra" = "#A52A2A", "País Vasco" = "#00FF00", "La Rioja" = "#DA70D6",            
+  "Ceuta" = "#4682B4", "Melilla" = "#5F9EA0", "Cataluña" = "#FFDAB9"
+)
+
+mapa_estatico_gg <- ggplot(data = mapa_con_datos) +
+  geom_sf(
+    aes(fill = ccaa.shortname.es, text = tooltip_data, key = ccaa.shortname.es),
+    color = NA, size = 0 
+  ) +
+  geom_sf_text(aes(label = ccaa.shortname.es), color = "black", size = 2) +
+  scale_fill_manual(values = colores_ccaa) +
+  theme_void() +
+  theme(legend.position = "none")
+
+mapa_interactivo_gg <- ggplotly(mapa_estatico_gg, tooltip = "text")
+
+mapa_interactivo_final <- mapa_interactivo_gg %>%
+  style(hoveron = "fills", traces = 1) %>% 
+  layout(
+    hoverlabel = list(bgcolor = "white", bordercolor = "black", font = list(color = "black"))
+  )
+
+mapa_interactivo_final
+```
+## 5. Relación TICs con Depresión por Nivel de Estudios
+Analizamos si la educación actúa como factor protector, utilizando un gráfico de doble eje.
+```{r}
+# Código extraído de: Grafico_nivel_estudios.R
+
+if(exists("tabla_nivel_estudios_final")){
+  
+  max_tics <- max(tabla_nivel_estudios_final$Porcentaje_TICS, na.rm = TRUE)
+  max_depresion <- max(tabla_nivel_estudios_final$Porcentaje_Depresion, na.rm = TRUE)
+  factor_escala <- max_tics / max_depresion
+
+  ggplot(tabla_nivel_estudios_final, 
+         aes(x = as.numeric(factor(Nivel_de_estudios, 
+                                   levels = c("Básico e inferior", "Intermedio", "Superior"))), 
+             group = 1)) +
+    
+    geom_line(aes(y = Porcentaje_TICS, color = "Uso de TICs"), linewidth = 1.5) +
+    geom_point(aes(y = Porcentaje_TICS, color = "Uso de TICs"), size = 4) +
+    geom_text(aes(y = Porcentaje_TICS, label = round(Porcentaje_TICS, 1)), vjust = -1.5) +
+    
+    geom_line(aes(y = Porcentaje_Depresion * factor_escala, color = "Depresión"), linewidth = 1.5) +
+    geom_point(aes(y = Porcentaje_Depresion * factor_escala, color = "Depresión"), size = 4) +
+    geom_text(aes(y = Porcentaje_Depresion * factor_escala, label = round(Porcentaje_Depresion, 2)), vjust = 2) +
+    
+    scale_y_continuous(
+      name = "Uso de TICs (%)",
+      sec.axis = sec_axis(~ . / factor_escala, name = "Depresión (%)")
+    ) +
+    
+    scale_x_continuous(
+      breaks = 1:3,
+      labels = c("Básico e inferior", "Intermedio", "Superior"),
+      name = "Nivel de Estudios"
+    ) +
+    
+    scale_color_manual(values = c("Uso de TICs" = "#1f77b4", "Depresión" = "#d62728")) +
+    
+    labs(
+      title = "Conclusión: El Nivel de Estudios como Factor Protector",
+      subtitle = "A mayor nivel educativo, aumenta el uso de TICs y disminuye la depresión",
+      color = "Indicador"
+    ) +
+    theme_classic() +
+    theme(legend.position = "bottom")
+}
+```
+## 6. Relación TICs con Empleabilidad
+Finalmente, mostramos la "paradoja" del uso de tecnología y la empleabilidad.
+```{r}
+# Código extraído de: Gráfico_impacto_trabajo_TICS.R
+# NOTA: Este script asume que 'df_contexto' y 'df_final_narrativa' existen.
+# Nos aseguramos de que se generen usando el código de "Impacto del Trabajo y las TICs.R" primero.
+
+# --- PREPARACIÓN (Impacto del Trabajo y las TICs.R) ---
+# 1. Preparar Contexto
+df_contexto <- mis_datos_salud_mental$depresion_actividad_economica %>%
+  rename(Actividad = `Actividad.económica`, Tipo_Depresion = `Prevalencia.depresión`, Porcentaje = Total) %>%
+  filter(Sexo == "Ambos sexos", Tipo_Depresion == "Cuadro depresivo mayor", Actividad != "TOTAL") %>%
+  mutate(
+    Tasa_Depresion = parse_number(Porcentaje, locale = locale(decimal_mark = ",")),
+    Clave_Union = case_when(
+      Actividad == "Jubilado/a o prejubilado/a" ~ "Jubilado/Pensionista",
+      Actividad == "Labores del hogar" ~ "Labores del hogar",
+      Actividad == "Incapacitado/a para trabajar" ~ "Incapacitado",
+      TRUE ~ "Otros"
+    ),
+    Color_Barra = ifelse(Clave_Union == "En desempleo", "#C0392B", "#95A5A6")
+  )
+
+# 2. Preparar TICs
+lista_frecuencias <- c("Han usado Internet diariamente (al menos 5 días a la semana)", "Han utilizado internet varias veces al día")
+
+df_tic_preparado <- mis_datos_tic$uso_internet_socioeconomico %>%
+  rename(Grupo = Clase.de.población, Características = Características.socioeconómicas, Frecuencia = Frecuencia.de.uso, Total_TIC = Total) %>%
+  filter(Grupo == "Total de personas (16 a 74 años)", Frecuencia %in% lista_frecuencias) %>%
+  mutate(
+    Tasa_Internet = parse_number(Total_TIC, locale = locale(decimal_mark = ",")),
+    Clave_Union = case_when(
+      Características == "Situación laboral: Activos ocupados" ~ "Trabajando",
+      Características == "Situación laboral: Activos parados" ~ "En desempleo",
+      Características == "Situación laboral: Inactivos: Estudiantes" ~ "Estudiando",
+      Características == "Situación laboral: Inactivos: Pensionistas" ~ "Jubilado/Pensionista",
+      Características == "Situación laboral: Inactivos: Labores del hogar" ~ "Labores del hogar",
+      TRUE ~ "Otros"
+    )
+  ) %>%
+  group_by(Clave_Union) %>%
+  summarise(Tasa_Internet = mean(Tasa_Internet, na.rm = TRUE))
+
+# 3. Union Final
+df_final_narrativa <- left_join(df_contexto, df_tic_preparado, by = "Clave_Union") %>%
+  filter(!is.na(Tasa_Internet)) %>% 
+  select(Clave_Union, Tasa_Depresion, Tasa_Internet, Color_Barra, Actividad)
+
+
+# --- VISUALIZACIÓN (Gráfico_impacto_trabajo_TICS.R) ---
+g1 <- ggplot(df_contexto, aes(x = reorder(Actividad, -Tasa_Depresion), y = Tasa_Depresion)) +
+  geom_col(aes(fill = Color_Barra), width = 0.6, alpha = 0.9) + 
+  geom_text(aes(label = paste0(Tasa_Depresion, "%")), vjust = -0.5, fontface = "bold", color = "#2C3E50", size = 3.5) +
+  scale_fill_identity() +
+  scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 10)) + 
+  scale_y_continuous(limits = c(0, max(df_contexto$Tasa_Depresion) + 1.5)) +
+  labs(
+    title = "<span style='font-size:14pt'>1. El Contexto</span>",
+    subtitle = "El <span style='color:#C0392B'><b>Desempleo</b></span> es el factor crítico en la salud mental base.",
+    x = "", y = ""
+  ) +
+  theme_fivethirtyeight() +
+  theme(
+    plot.title = element_markdown(face = "bold"),
+    plot.subtitle = element_markdown(size = 10),
+    axis.text.x = element_text(size = 8.5, face = "bold", lineheight = 0.9),
+    axis.text.y = element_blank(),
+    panel.grid.major = element_blank(),
+    plot.background = element_rect(fill = "white", color = NA),
+    panel.background = element_rect(fill = "white", color = NA)
+  )
+
+g2 <- ggplot(df_final_narrativa, aes(x = Tasa_Internet, y = Tasa_Depresion)) +
+  geom_smooth(method = "lm", se = FALSE, color = "aquamarine1", linetype = "solid", size = 1) +
+  geom_point(aes(fill = Clave_Union), size = 6, shape = 21, color = "white", stroke = 1.5) +
+  geom_mark_ellipse(aes(filter = Clave_Union %in% c("En desempleo", "Estudiando"),
+                        label = Clave_Union,
+                        description = "Perfiles opuestos"),
+                    label.fontsize = 8, 
+                    label.buffer = unit(5, "mm"),
+                    con.cap = 0,
+                    color = "grey50") +
+  geom_text_repel(aes(label = Clave_Union), 
+                  data = subset(df_final_narrativa, !Clave_Union %in% c("En desempleo", "Estudiando")),
+                  size = 3.5, color = "grey40", point.padding = 0.5) +
+  scale_fill_tableau() +
+  labs(
+    title = "<span style='font-size:14pt'>2. El Giro (TICs)</span>",
+    subtitle = "Alta tecnología no garantiza salud mental: comparar <b style='color:#F28E2B'>Estudiantes</b> vs <b style='color:#E15759'>Parados</b>.",
+    x = "Uso Diario de Internet (%)", 
+    y = "Depresión Mayor (%)",
+    caption = "Fuente: Elaboración propia con datos INE"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_markdown(face = "bold"),
+    plot.subtitle = element_markdown(size = 10),
+    legend.position = "none",
+    axis.title = element_text(size = 9, face = "bold", color = "grey40"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_line(color = "grey95")
+  )
+
+layout_final <- g1 + g2 + 
+  plot_annotation(
+    title = 'IMPACTO DEL TRABAJO Y LA BRECHA DIGITAL EN LA SALUD MENTAL',
+    subtitle = 'Análisis cruzado de Encuesta Europea de Salud y Encuesta TIC',
+    theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5))
+  )
+
+print(layout_final)
 ```
