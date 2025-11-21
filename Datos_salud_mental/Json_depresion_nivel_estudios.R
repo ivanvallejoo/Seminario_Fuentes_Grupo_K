@@ -16,14 +16,14 @@ View(nivel_estudios_parseado)
 
 
 
-tabla_nivel_estudios_separada <- nivel_estudios_parseado %>%
+tabla_nivel_estudios <- nivel_estudios_parseado %>%
   tidyr::separate(
     col = Nombre,
     into = c("Sexo", "Edad", "Nivel_de_estudios", "Prevalencia_depresion"), 
     sep = ", "
   ) %>% 
-  dplyr::rename(Porcentaje = Valor) %>%  #renombro valor con un nombre más descriptivo como porcentaje
-  dplyr::select(-Secreto)
+  rename(Porcentaje = Valor) %>%  
+  select(-Secreto)
 
 
 View(tabla_nivel_estudios_separada)

@@ -25,7 +25,7 @@ library(dplyr)
 library(readr)
 
 
-limpiar_y_resumir_tic <- function(csv_tic, tipo_poblacion, uso_frecuente) {
+funcion_tic_adultos_mayores <- function(csv_tic, tipo_poblacion, uso_frecuente) {
   
   datos_limpios <- csv_tic %>%
     filter(
@@ -51,7 +51,7 @@ limpiar_y_resumir_tic <- function(csv_tic, tipo_poblacion, uso_frecuente) {
 }
 
 
-adultos_tabla <- limpiar_y_resumir_tic(
+adultos_tabla <- funcion_tic_adultos_mayores(
   csv_tic = mis_datos_tic$uso_internet_comunidades_adultos,
   tipo_poblacion = "Total personas (16 a 74 años)",
   uso_frecuente = uso_frecuente #vector creado arriba
@@ -63,7 +63,7 @@ adultos_tabla <- limpiar_y_resumir_tic(
   )
 
 
-mayores_tabla <- limpiar_y_resumir_tic(
+mayores_tabla <- funcion_tic_adultos_mayores(
   csv_tic = mis_datos_tic$uso_internet_comunidades_mayores, 
   tipo_poblacion = "Total personas (75 y más años)",
   uso_frecuente = uso_frecuente

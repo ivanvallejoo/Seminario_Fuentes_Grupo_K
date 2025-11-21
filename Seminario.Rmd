@@ -30,7 +30,7 @@ author: "Iván Vallejo Cabrero y Diego Ugarte López"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-##Paquetes empleados
+## Paquetes empleados
 
 ```{r message=FALSE, warning=FALSE}
 
@@ -57,29 +57,23 @@ library(stringr)
 ```{r}
 load("OUTPUT/Enviroment_total.RData")
 ```
+
 ## 1. Introducción
 
 En nuestro seminario analizaremos cómo **factores tecnológicos** impactan en la **salud mental** a nivel de España. 
 
-> **Pregunta de investigación:** ¿Actúa la tecnología como un escudo protector ante la depresión o, por el contrario, profundiza las desigualdades existentes?
+> **Pregunta 1:** ¿Cuál es el perfil de la población más digitalizada en España y cuál es el perfil de la población con más problemas de salud mental?
 
-Para responderla, nos centramos en tres dimensiones clave:
 
-1.  **Contexto de Salud Mental:** Identificar los grupos de riesgo.
-2.  **Contexto Tecnológico:** Mapear la `brecha digital` por edad y territorio.
-3.  **Interacción:** Cruzar las variables de **Empleo**, **Educación** y **Territorio**.
+Utilizaremos datos procesados con **R**, provenientes de la siguiente fuente oficial:
 
-Utilizamos datos masivos procesados con **R**, provenientes de dos fuentes oficiales:
-
-* *Encuesta Europea de Salud.*
 * *Encuesta sobre Equipamiento y Uso de Tecnologías (TIC) del INE.*
 
 ---
 
-El análisis revela que grupos vulnerables, como los <span style="color: #C0392B"><b>Desempleados</b></span>, presentan patrones paradójicos de uso tecnológico que discutiremos a continuación.
 
 ## 2. Contexto de Salud Mental
-Para entender la magnitud del problema, primero analizamos la distribución de la depresión según factores demográficos clave.
+Para entender la magnitud del problema, primero analizamos la distribución de la depresión según los siguientes factores.
 
 **Depresión por Actividad Económica y Sexo**
 
