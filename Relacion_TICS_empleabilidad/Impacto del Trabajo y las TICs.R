@@ -1,4 +1,3 @@
-
 library(dplyr)
 library(readr)  # Para parse_number
 library(tidyr)
@@ -27,6 +26,9 @@ df_contexto <- mis_datos_salud_mental$depresion_actividad_economica %>%
     
     # 4. Usamos grepl() (R base) o igualdad exacta para homologar
     Clave_Union = case_when(
+      # --- ESTA ES LA LÍNEA QUE FALTABA PARA QUE SALGA ROJO ---
+      Actividad == "Parado/a" ~ "En desempleo",
+      # ------------------------------------------------------
       Actividad == "Jubilado/a o prejubilado/a" ~ "Jubilado/Pensionista",
       Actividad == "Labores del hogar" ~ "Labores del hogar",
       Actividad == "Incapacitado/a para trabajar" ~ "Incapacitado",
