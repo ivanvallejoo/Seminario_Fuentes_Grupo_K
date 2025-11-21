@@ -77,17 +77,17 @@ Utilizamos datos masivos procesados con **R**, provenientes de dos fuentes ofici
 El análisis revela que grupos vulnerables, como los <span style="color: #C0392B"><b>Desempleados</b></span>, presentan patrones paradójicos de uso tecnológico que discutiremos a continuación.
 
 ## 2. Contexto de Salud Mental
-Analizamos la prevalencia de depresión utilizando los gráficos generados en tus scripts de procesamiento de CSV y JSON.
+Para entender la magnitud del problema, primero analizamos la distribución de la depresión según factores demográficos clave.
 
+**Depresión por Actividad Económica y Sexo**
 
-*Depresión por Actividad Económica y Sexo*
+El siguiente gráfico revela una realidad contundente sobre los determinantes sociales de la salud.
 
-Visualizamos el impacto del desempleo diferenciando entre "Cuadro depresivo mayor" y otros cuadros.
+> Dato Crítico: El grupo de <span style="color: #C0392B"><b>En Desempleo</b></span> presenta las tasas más altas de Cuadro Depresivo Mayor, superando significativamente a los ocupados.
 
 ```{r}
 # Código extraído de: Tablas_graficos_CSV.R
 
-# AJUSTE: fig.height=6 para que no sea demasiado alto. layout="l-body-outset" da más ancho.
 
 # Preparación
 datos_grafico_actividad <- mis_datos_salud_mental$depresion_actividad_economica %>%
@@ -121,9 +121,13 @@ g_actividad_apilado <- ggplot(datos_grafico_actividad,
 
 print(g_actividad_apilado)
 ```
-*Intensidad de la Depresión por Edad*
+**Intensidad de la Depresión por Edad**
 
 Analizamos la gravedad de los síntomas a lo largo del ciclo vital.
+
+* La intensidad aumenta progresivamente con la edad.
+
+* Existe una **brecha de género** notable en todos los grupos etarios.
 ```{r}
 # Código extraído de: Tablas_graficos_CSV.R
 
@@ -159,12 +163,14 @@ print(g_edad_apilado)
 
 ## 3. Contexto de Uso de TICs
 
-A continuación, establecemos el perfil tecnológico de España, observando la brecha generacional en las distintas Comunidades Autónomas.
-```{r}
-# Código extraído de: Gráfico_barras_TICS.R
+A continuación, establecemos el perfil tecnológico de España, observando la **brecha generacional** en las distintas Comunidades Autónomas.
 
-# AJUSTE: layout="l-page" usa TODO el ancho de la pantalla. 
-# fig.height=9 necesario porque hay muchas comunidades en el eje X.
+1. Niños (10-15 años): Nativos digitales.
+
+2. Adultos (16-74 años): Usuarios mayoritarios.
+
+3. Mayores (75+ años): Donde reside la mayor brecha de acceso.
+```{r}
 
 # Corrección nombres
 uso_tic_total_corregido <- uso_tic_total %>%
@@ -224,7 +230,10 @@ ggplot(uso_tic_ordenada, aes(x=Comunidad, y=Frecuencia_Total, fill=Grupo_Edad))+
 
 ## 4. Relación TICs con Depresión por Comunidades
 
-¿Cómo se distribuye geográficamente el uso de tecnología? Utilizamos un mapa interactivo para explorar los datos territoriales.
+¿Existe un patrón territorial? Utilizamos un **mapa interactivo** para explorar si las comunidades más "conectadas" tienen mejores indicadores de salud mental.
+
+>**Instrucciones:** Pase el ratón por encima de cada comunidad para ver el desglose detallado de uso de internet por grupos de edad.
+
 ```{r}
 # Código extraído de: Mapa_España_TICS.R
 
@@ -294,7 +303,11 @@ mapa_interactivo_final
 
 ## 5. Relación TICs con Depresión por Nivel de Estudios
 
-Analizamos si la educación actúa como factor protector, utilizando un gráfico de doble eje.
+Analizamos si la **educación** actúa como *factor protector*. El siguiente gráfico de doble eje muestra un cruce revelador:
+
+* <span style="color: #1f77b4"><b>Línea Azul (TICs):</b></span> A mayor nivel educativo, mayor uso de tecnología.
+
+* <span style="color: #d62728"><b>Línea Roja (Depresión):</b></span> A mayor nivel educativo, la depresión cae drásticamente.
 ```{r}
 # Código extraído de: Grafico_nivel_estudios.R
 
@@ -344,7 +357,15 @@ if(exists("tabla_nivel_estudios_final")){
 
 ## 6. Relación TICs con Empleabilidad
 
-Finalmente, mostramos la "paradoja" del uso de tecnología y la empleabilidad.
+Finalmente, llegamos a la **"Paradoja Digital"**. A menudo se asume que la conexión digital mejora las oportunidades, pero los datos muestran una realidad más compleja.
+
+Comparamos dos grupos con niveles similares de uso de internet, pero realidades opuestas:
+
+1. **Estudiantes**: Alta conectividad y baja depresión.
+
+2. **Desempleados**: Alta conectividad y <span style="color: #C0392B"><b>Muy alta depresión</b></span>.
+
+
 ```{r relacion_empleabilidad, fig.height=14, fig.width=10, layout="l-body-outset"}
 df_contexto <- mis_datos_salud_mental$depresion_actividad_economica %>%
   
