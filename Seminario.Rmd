@@ -1,25 +1,32 @@
 ---
-title: "Tecnología y Salud Mental"
+title: "Impacto de las TIC en la Salud Mental"
 description: "Un Análisis con R sobre la correlación entre horas de pantalla y ansiedad."
-author: "Tu Nombre Completo"
+author: "Iván Vallejo Cabrero y Diego Ugarte López"
 date: "`r format(Sys.Date(), '%d de %B de %Y')`"
 lang: "es"
-output:
-  distill::distill_article:
+output: 
+  html_document: 
     toc: true
+    toc_depth: 6
     toc_float: true
-    toc_depth: 3
-    css: "style.css"
+    theme: united
+    highlight: tango
+      
 ---
 
+```{=html}
+<style>
+  body {
+    background-color: #A7E09D; 
+  }
+</style>
+```
 ```{r setup, include=FALSE}
-# Configuración global de los chunks de R
-knitr::opts_chunk$set(
-  echo = TRUE,      # Muestra el código por defecto
-  message = FALSE,  # Oculta mensajes
-  warning = FALSE   # Oculta advertencias
-)
+knitr::opts_chunk$set(echo = TRUE)
+```
 
+
+```{r}
 # Carga de paquetes
 library(dplyr)
 library(ggplot2)

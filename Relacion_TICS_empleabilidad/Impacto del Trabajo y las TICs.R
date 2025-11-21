@@ -50,8 +50,7 @@ lista_frecuencias <- c(
 )
 
 df_tic_preparado <- mis_datos_tic$uso_internet_socioeconomico %>%
-  
-  # 1. Renombrar usando los nombres que genera make.names (sin tildes)
+  S
   rename(
     Grupo = Clase.de.población, 
     Características = Características.socioeconómicas, 
@@ -67,10 +66,9 @@ df_tic_preparado <- mis_datos_tic$uso_internet_socioeconomico %>%
   ) %>%
   
   mutate(
-    # 3. Usamos parse_number otra vez
+ 
     Tasa_Internet = parse_number(Total_TIC, locale = locale(decimal_mark = ",")),
     
-    # 4. Homologación con grepl (equivalente a str_detect)
     Clave_Union = case_when(
       Características == "Situación laboral: Activos ocupados" ~ "Trabajando",
       Características == "Situación laboral: Activos parados" ~ "En desempleo",
