@@ -165,11 +165,12 @@ print(g_edad_apilado)
 
 A continuación, establecemos el perfil tecnológico de España, observando la **brecha generacional** en las distintas Comunidades Autónomas.
 
-1. Niños (10-15 años): Nativos digitales.
+1. **Niños (10-15 años):** Nativos digitales.
 
-2. Adultos (16-74 años): Usuarios mayoritarios.
+2. **Adultos (16-74 años):** Usuarios mayoritarios.
 
-3. Mayores (75+ años): Donde reside la mayor brecha de acceso.
+3. **Mayores (75+ años):** Donde reside la mayor brecha de acceso.
+
 ```{r}
 
 # Corrección nombres
@@ -308,6 +309,7 @@ Analizamos si la **educación** actúa como *factor protector*. El siguiente gr�
 * <span style="color: #1f77b4"><b>Línea Azul (TICs):</b></span> A mayor nivel educativo, mayor uso de tecnología.
 
 * <span style="color: #d62728"><b>Línea Roja (Depresión):</b></span> A mayor nivel educativo, la depresión cae drásticamente.
+
 ```{r}
 # Código extraído de: Grafico_nivel_estudios.R
 
