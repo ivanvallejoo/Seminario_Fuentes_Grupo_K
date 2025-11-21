@@ -1,11 +1,11 @@
 g_actividad_apilado <- ggplot(datos_grafico_actividad,
-                              # Usamos reorder para ordenar las barras de mayor a menor porcentaje
+                              
                               aes(x = reorder(Actividad.económica, Porcentaje), 
                                   y = Porcentaje, 
                                   fill = Prevalencia.depresión)) +
   
-  # Usamos geom_bar con stat="identity" (el equivalente clásico a geom_col en tu práctica)
-  geom_bar(stat = "identity") + 
+  
+  geom_col(stat = "identity") + 
   
   geom_text(
     aes(label = paste0(round(Porcentaje, 1), "%")), # Redondeamos a 1 decimal y añadimos %

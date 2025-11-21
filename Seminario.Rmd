@@ -73,93 +73,137 @@ Utilizaremos datos procesados con **R**, provenientes de la siguiente fuente ofi
 
 
 ## 2. Contexto de Salud Mental
+
 Para entender la magnitud del problema, primero analizamos la distribución de la depresión según los siguientes factores.
 
-**Depresión por Actividad Económica y Sexo**
+**Depresión por Situación Laboral y Sexo**
 
-El siguiente gráfico revela una realidad contundente sobre los determinantes sociales de la salud.
+Se representa en el eje x el porcentaje de cuadros depresivos, en el eje y la situación laboral y se dividen los resultados en hombres y mujeres.
 
-> Dato Crítico: El grupo de <span style="color: #C0392B"><b>En Desempleo</b></span> presenta las tasas más altas de Cuadro Depresivo Mayor, superando significativamente a los ocupados.
+En el siguiente gráfico vemos datos depresivos mayores en mujeres que en hombres.
+
+
+> Dato Crítico: El grupo de Desempleo presenta las tasas más altas de Cuadro Depresivo Mayor, superando significativamente al grupo que trabaja .
 
 ```{r}
-# Código extraído de: Tablas_graficos_CSV.R
-
-
-# Preparación
-datos_grafico_actividad <- mis_datos_salud_mental$depresion_actividad_economica %>%
-  rename(Porcentaje = Total) %>% 
-  mutate(Porcentaje = as.numeric(sub(",", ".", Porcentaje, fixed = TRUE))) %>%
+  # Código extraído de: Tabla_situacion_laboral.R y Grafico_situacion_laboral.R
+  
+  
+  # Tabla
+  datos_grafico_estudios <- mis_datos_salud_mental$depresion_actividad_economica %>%
+  
+  mutate(
+  Porcentaje = parse_number(Total, locale = locale(decimal_mark = ","))
+    ) %>%
+  
   filter(
     Sexo != "Ambos sexos",
-    `Actividad.económica` != "TOTAL",        
-    `Prevalencia.depresión` %in% c("Cuadro depresivo mayor", "Otros cuadros depresivos")
+    Actividad.económica != "TOTAL",        
+    Prevalencia.depresión %in% c("Cuadro depresivo mayor", "Otros cuadros depresivos")
   )
 
-# Gráfico
-g_actividad_apilado <- ggplot(datos_grafico_actividad,
-                              aes(x = reorder(`Actividad.económica`, Porcentaje), 
+  
+  # Gráfico
+  
+ g_actividad_apilado <- ggplot(datos_grafico_estudios,
+                              aes(x = reorder(Actividad.económica, Porcentaje), 
                                   y = Porcentaje, 
-                                  fill = `Prevalencia.depresión`)) +
+                                  fill = Prevalencia.depresión)) +
+  
+
+  geom_bar(stat = "identity") + 
+  
+  geom_text(
+    aes(label = paste0(round(Porcentaje, 1), "%")), 
+    
+    position = position_stack(vjust = 0.5),
+    
+    color = "black", 
+    size = 2,        
+    fontface = "bold"
+  )+
+  
+  facet_wrap(~ Sexo) +
+  
+
+  coord_flip() + 
+  
+  labs(
+    title = "Depresión por Situación Laboral y Sexo",
+    x = "", # Dejamos vacío porque los nombres de actividad ya describen el eje
+    y = "Porcentaje Total (%)",
+    fill = "Diagnóstico"
+  ) +
+  
+  scale_fill_brewer(palette = "Reds") +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(face = "bold")
+  )
+
+print(g_actividad_apilado)
+
+```
+
+**Intensidad de la Depresión por nivel de estudios**
+
+Analizamos la gravedad de la depresión en función de los estudios.
+
+* Vemos de nuevo que la depresión afecta más al grupo de las mujeres que al grupo de los hombres.
+* También vemos como a mayor nivel de estudios, menor porcentaje de depresión.
+
+> Dato Crítico: Personas que tienen un nivel de estudios inferior, son las que más cuadros depresivos padecen.
+
+
+```{r}
+# Código extraído de: Tabla_nivel_estudios.R y Grafico_nivel_estudios.R
+
+tabla_nivel_estudios <- nivel_estudios_parseado %>%
+  tidyr::separate(
+    col = Nombre,
+    into = c("Sexo", "Edad", "Nivel_de_estudios", "Prevalencia_depresion"), 
+    sep = ", "
+  ) %>% 
+  rename(Porcentaje = Valor) %>%  
+  select(-Secreto)
+
+datos_grafico_estudios <- tabla_nivel_estudios %>%
+  filter(
+    Sexo != "Ambos sexos",
+    Nivel_de_estudios != "Total",
+    Edad == "TOTAL", 
+    
+    Prevalencia_depresion %in% c("Cuadro depresivo mayor", "Otros cuadros depresivos")
+  ) %>% 
+  mutate(Nivel_de_estudios= factor(
+    Nivel_de_estudios, levels = c("TOTAL", "Básico e inferior", "Intermedio","Superior" )
+    )
+  )
+
+grafico_nivel_estudios<- ggplot(datos_grafico_estudios,
+                             aes(x = Nivel_de_estudios,
+                                 y = Porcentaje, 
+                                 fill = Prevalencia_depresion)) +
   geom_col() + 
   facet_wrap(~ Sexo) + 
   coord_flip() + 
   labs(
-    title = "Depresión por Actividad Económica y Sexo",
-    subtitle = "Prevalencia de cuadros depresivos según situación laboral",
-    x = "",
-    y = "Porcentaje Total (%)",
-    fill = "Diagnóstico"
+    title = "Depresión por Nivel de Estudios y Sexo",
+    subtitle = "Cuadro depresivo mayor y Otros cuadros depresivos",
+    x = "Nivel de Estudios",
+    y = "Porcentaje Total de Prevalencia (%)",
+    fill = "Prevalencia"
   ) +
   scale_fill_brewer(palette = "Reds") +
-  theme_minimal() +
-  theme(legend.position = "bottom",
-        plot.title = element_text(face="bold"))
+  theme_minimal()
 
-print(g_actividad_apilado)
-```
-**Intensidad de la Depresión por Edad**
-
-Analizamos la gravedad de los síntomas a lo largo del ciclo vital.
-
-* La intensidad aumenta progresivamente con la edad.
-
-* Existe una **brecha de género** notable en todos los grupos etarios.
-```{r}
-# Código extraído de: Tablas_graficos_CSV.R
-
-# AJUSTE: fig.height=5. Más compacto.
-
-datos_grafico_edad <- mis_datos_salud_mental$depresion_sexo_y_grupo_de_edad %>%
-  rename(Porcentaje = Total) %>% 
-  mutate(Porcentaje = as.numeric(sub(",", ".", Porcentaje, fixed = TRUE))) %>%
-  filter(
-    Sexo != "Ambos sexos",
-    Edad != "TOTAL", 
-    `Intensidad.depresión` %in% c("Leve", "Moderada", "Moderadamente grave", "Grave")
-  )
-
-g_edad_apilado <- ggplot(datos_grafico_edad,
-                         aes(x = Edad, 
-                             y = Porcentaje, 
-                             fill = `Intensidad.depresión`)) +
-  geom_col() + 
-  facet_wrap(~ Sexo) + 
-  labs(
-    title = "Intensidad de Depresión por Edad y Sexo",
-    x = "Grupo de Edad",
-    y = "Porcentaje (%)",
-    fill = "Intensidad"
-  ) +
-  scale_fill_brewer(palette = "Reds") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
-
-print(g_edad_apilado)
+print(grafico_nivel_estudios)
 ```
 
 ## 3. Contexto de Uso de TICs
 
-A continuación, establecemos el perfil tecnológico de España, observando la **brecha generacional** en las distintas Comunidades Autónomas.
+A continuación vamos a definir cual es el perfil de las personas que utilizan las TIC en España, observando en las distintas Comunidades Autónomas y clasificando por edad.
 
 1. **Niños (10-15 años):** Nativos digitales.
 
