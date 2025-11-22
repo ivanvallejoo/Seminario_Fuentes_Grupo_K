@@ -54,22 +54,27 @@ library(stringr)
 
 ```
 
-```{r}
+
+```{r warning=FALSE, message=FALSE}
 load("OUTPUT/Enviroment_total.RData")
 ```
+
+<br>
 
 ## 1. Introducción
 
 En nuestro seminario analizaremos cómo **factores tecnológicos** impactan en la **salud mental** a nivel de España. 
 
 > **Pregunta 1:** ¿Cuál es el perfil de la población más digitalizada en España y cuál es el perfil de la población con más problemas de salud mental?
-
+    
 
 Utilizaremos datos procesados con **R**, provenientes de la siguiente fuente oficial:
 
 * *Encuesta sobre Equipamiento y Uso de Tecnologías (TIC) del INE.*
 
----
+--- 
+
+<br>
 
 
 ## 2. Contexto de Salud Mental
@@ -85,7 +90,9 @@ En el siguiente gráfico vemos datos depresivos mayores en mujeres que en hombre
 
 > Dato Crítico: El grupo de Desempleo presenta las tasas más altas de Cuadro Depresivo Mayor, superando significativamente al grupo que trabaja .
 
-```{r}
+<br>
+
+```{r warning=FALSE, message=FALSE}
   # Código extraído de: Tabla_situacion_laboral.R y Grafico_situacion_laboral.R
   
   
@@ -135,7 +142,7 @@ En el siguiente gráfico vemos datos depresivos mayores en mujeres que en hombre
     fill = "Diagnóstico"
   ) +
   
-  scale_fill_brewer(palette = "Reds") +
+  scale_fill_brewer(palette = "Blues") +
   theme_minimal() +
   theme(
     legend.position = "bottom",
@@ -146,6 +153,8 @@ print(g_actividad_apilado)
 
 ```
 
+<br>
+
 **Intensidad de la Depresión por nivel de estudios**
 
 Analizamos la gravedad de la depresión en función de los estudios.
@@ -155,8 +164,9 @@ Analizamos la gravedad de la depresión en función de los estudios.
 
 > Dato Crítico: Personas que tienen un nivel de estudios inferior, son las que más cuadros depresivos padecen.
 
+<br>
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 
 # Código extraído de: Tabla_nivel_estudios.R y Grafico_nivel_estudios.R
 
@@ -196,20 +206,28 @@ grafico_nivel_estudios<- ggplot(datos_grafico_estudios,
     y = "Porcentaje Total de Prevalencia (%)",
     fill = "Prevalencia"
   ) +
-  scale_fill_brewer(palette = "Reds") +
+  scale_fill_brewer(palette = "Blues") +
   theme_minimal()
 
 print(grafico_nivel_estudios)
 ```
 
+<br>
+
 ## 3. Uso de las TICS por comunidades autónomas.
 
 Vamos a ver la distribución de las TIC sobre el territorio español.
 
->**Instrucciones:** Pase el ratón por encima de cada comunidad para ver el desglose detallado de uso de internet por grupos de edad.
+Hemos unificado los datos de niños, adultos y mayores para crear un "Índice Digital"
+
+Las zonas más oscuras es donde más uso de las TICs hay, las zonas menos claras tienen un menor uso de estas.
+
+<br>
+
+>**Instrucciones:** Pase el ratón por encima de cada comunidad para ver el las etiquetas de cada comunidad de uso de internet por grupos de edad.
 
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 # Código extraído de: Mapa_España_TICS.R
 
 
@@ -219,6 +237,7 @@ mapa_españa_ccaa <- esp_get_ccaa(moveCAN = TRUE)
 uso_tic_total_corregido_mapa <- uso_tic_total %>%
   mutate(
     Comunidad = case_when(
+      Comunidad == "Asturias, Principado de"~"Asturias",
       Comunidad == "Balears, Illes" ~ "Baleares",
       Comunidad == "Castilla - La Mancha" ~ "Castilla-La Mancha",
       Comunidad == "Comunitat Valenciana" ~ "Comunidad Valenciana",
@@ -291,7 +310,14 @@ mapa_final_españa
 
 ```
 
+El resultado se debe al factor de la edad media de cada comunidad autónoma, lo explicaremos en el siguiente gráfico.
 
+
+Podemos observar que las zonas con mayor densidad de población presentan los índices de uso más altos.
+
+Como conclusión de este mapa vemos que el uso de las TICs se concentra donde hay **más gente** y **más joven**. 
+
+<br>
 
 ## 4. Contexto de Uso de TICs
 
@@ -299,7 +325,7 @@ A continuación vamos a definir cual es el perfil de las personas que utilizan l
 
 1. **Niños (10-15 años):** 
 
-2. **Adultos (16-74 años):** U
+2. **Adultos (16-74 años):** 
 
 3. **Mayores (75+ años):** 
 ```{r}
@@ -309,24 +335,14 @@ A continuación vamos a definir cual es el perfil de las personas que utilizan l
 uso_tic_total_corregido <- uso_tic_total %>%
   mutate(
     Comunidad = case_when(
-      Comunidad == "Andalucía" ~ "Andalucía",
-      Comunidad == "Aragón" ~ "Aragón",
-      Comunidad == "Asturias, Principado de" ~ "Asturias",
+      Comunidad == "Asturias, Principado de"~"Asturias",
       Comunidad == "Balears, Illes" ~ "Baleares",
-      Comunidad == "Canarias" ~ "Canarias",
-      Comunidad == "Cantabria" ~ "Cantabria",
-      Comunidad == "Castilla y León" ~ "Castilla y León",
-      Comunidad == "Castilla - La Mancha" ~ "Castilla - La Mancha",
+      Comunidad == "Castilla - La Mancha" ~ "Castilla-La Mancha",
       Comunidad == "Comunitat Valenciana" ~ "Comunidad Valenciana",
-      Comunidad == "Extremadura" ~ "Extremadura",
-      Comunidad == "Galicia" ~ "Galicia",
       Comunidad == "Madrid, Comunidad de" ~ "Madrid",
       Comunidad == "Murcia, Región de" ~ "Murcia",
       Comunidad == "Navarra, Comunidad Foral de" ~ "Navarra",
-      Comunidad == "País Vasco" ~ "País Vasco",
       Comunidad == "Rioja, La" ~ "La Rioja",
-      Comunidad == "Ceuta" ~ "Ceuta",
-      Comunidad == "Melilla" ~ "Melilla",
       TRUE ~ Comunidad
     )
   )
@@ -353,7 +369,7 @@ ggplot(uso_tic_ordenada, aes(x=Comunidad, y=Frecuencia_Total, fill=Grupo_Edad))+
     y= "Porcentaje de Uso Promedio (%)",
     x= "",
     fill = "Grupo de Edad")+
-  scale_fill_brewer(palette = "Reds") +
+  scale_fill_brewer(palette = "Blues") +
   theme_classic()+
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1, size=10),
