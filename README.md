@@ -1,4 +1,5 @@
-# 🧠 Determinantes Socioeconómicos y Digitales de la Salud Mental
+# Impacto de las TIC en la Salud Mental
+## Un análisis conjunto en R de la situación en España entre el uso de tecnología y la salud mental.
 
 > **Seminario de R** | Asignatura: Fuentes de Datos Biomédicos y Web Semántica  
 > **Grado:** Ingeniería de la Salud - Universidad de Burgos  
@@ -8,16 +9,16 @@
 
 ## 1. Introducción
 
-La salud mental es un fenómeno multidimensional influenciado no solo por factores biológicos, sino fuertemente determinado por el entorno socioeconómico. En el contexto actual de digitalización acelerada, surge la necesidad de entender cómo interactúan los estresores clásicos (como el desempleo) con los nuevos determinantes tecnológicos (brecha digital y uso de TICs).
+La salud mental es un fenómeno influenciado no solo por factores biológicos, sino fuertemente determinado por el entorno socioeconómico. En el contexto actual de digitalización acelerada, surge la necesidad de entender cómo interactúan los estresores clásicos (como el desempleo) con los nuevos determinantes tecnológicos (brecha digital y uso de TICs).
 
 Aunque existe amplia literatura sobre el impacto negativo del desempleo, **se desconoce en gran medida si el acceso a la tecnología actúa como un factor protector (conectividad) o un estresor añadido** en poblaciones vulnerables. Este proyecto utiliza **R** y el ecosistema **Tidyverse** para procesar fuentes de datos heterogéneas (Encuestas Nacionales de Salud y TIC) y visualizar estas relaciones complejas.
 
 ## 2. Objetivos
 
-### 🎯 Objetivo General
-Analizar la interacción entre la situación laboral, el nivel educativo y el uso de tecnologías (TICs) para determinar su impacto conjunto sobre la prevalencia de **Depresión Mayor** en España.
+### Objetivo General
+Analizar la interacción entre el uso de tecnologías (TICs) y sus distintos ámbitos para determinar su impacto conjunto sobre la prevalencia de **Depresión Mayor** en España.
 
-### 🔍 Objetivos Específicos
+### Objetivos Específicos
 1.  **Contextualizar el riesgo laboral:** Cuantificar la "Línea Base" del impacto del desempleo en la salud mental frente a otras situaciones.
 2.  **Evaluar la "Paradoja Tecnológica":** Determinar si un alto uso de Internet mitiga o agrava la depresión en grupos de riesgo (Comparativa: *Estudiantes vs. Desempleados*).
 3.  **Análisis Territorial:** Visualizar mediante mapas interactivos la distribución geográfica de la brecha digital por Comunidades Autónomas.
@@ -29,24 +30,24 @@ Analizar la interacción entre la situación laboral, el nivel educativo y el us
 
 El proyecto se ha desarrollado siguiendo un flujo de trabajo reproducible, organizado en los siguientes módulos:
 
-### 📄 Informe Principal
-* **`Seminario.Rmd`**: Script maestro en RMarkdown. Integra todo el código, la narrativa y genera el informe final en HTML con estilos personalizados.
-* **`style.css`**: Hoja de estilos personalizada (fuentes *Montserrat/Open Sans*, paleta de colores y maquetación ancha).
-* **`Enviroment_total.RData`**: Imagen del entorno de trabajo con los datos pre-procesados para una carga rápida.
+### Informe Principal
+* **`Seminario.Rmd`**: Script maestro en *RMarkdown*. Integra todo el código, la narrativa y genera el informe final en HTML con estilos personalizados.
+* **`style.css`**: Hoja de estilos personalizada.
+* **`Enviroment_total.RData`**: Entorno de trabajo con los datos pre-procesados para una carga rápida.
 
-### 🛠️ Scripts de Procesamiento (ETL)
+### Scripts de Procesamiento
 Limpieza de datos crudos, manejo de codificación y normalización de variables:
 * `Procesamiento_CSV(Salud_Mental).R`: Ingesta de datos de actividad económica y edad.
 * `Procesamiento_CSV(TIC).R`: Ingesta de datos de uso de internet y equipamiento.
 * `Tabla y grafico JSON.R`: Procesamiento de datos provenientes de formato JSON.
 
-### 📊 Scripts de Análisis y Visualización
+### Scripts de Análisis y Visualización
 * **La Paradoja (Empleo vs TICs):** `Impacto del Trabajo y las TICs.R` y `Gráfico_impacto_trabajo_TICS.R` (Genera el gráfico combinado de barras y dispersión con elipses).
 * **Análisis Territorial:** `Mapa_España_TICS.R` (Generación de mapas con `mapSpain` y `plotly`) y `Uso_TICS.R`.
 * **Factor Educativo:** `Grafico_nivel_estudios.R` (Gráfico de doble eje: TICs vs Depresión).
 * **Contexto Salud:** `Tablas_graficos_CSV.R` (Gráficos de barras apiladas por edad y sexo).
 
-### 💾 Datos (Fuente: INE)
+### Datos (Fuente: INE)
 Los datos brutos se organizan en carpetas temáticas:
 * `/Datos_salud_mental/`: Encuesta Europea de Salud (`depresion_actividad_economica.csv`, etc.).
 * `/Datos_tic/`: Encuesta de Uso de TIC (`uso_internet_socioeconomico.csv`, etc.).
@@ -67,7 +68,7 @@ El análisis visual arroja tres conclusiones principales:
 
 ## 5. Instrucciones de Ejecución
 
-Para reproducir este análisis en tu máquina local:
+Para reproducir este análisis en tu equipo local:
 
 1.  **Clonar el repositorio:**
     ```bash
@@ -80,7 +81,7 @@ Para reproducir este análisis en tu máquina local:
                        "ggtext", "ggrepel", "ggforce", "patchwork", 
                        "sf", "mapSpain", "plotly", "jsonlite", "stringr"))
     ```
-4.  **Generar el informe:** Abre `Seminario.Rmd` y pulsa el botón **Knit** (o ejecuta `rmarkdown::render("Seminario.Rmd")`).
+4.  **Generar el informe:** Abre `Seminario.Rmd` y pulsa el botón **Knit**.
 
 ---
 
