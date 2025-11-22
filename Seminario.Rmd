@@ -157,6 +157,7 @@ Analizamos la gravedad de la depresión en función de los estudios.
 
 
 ```{r}
+
 # Código extraído de: Tabla_nivel_estudios.R y Grafico_nivel_estudios.R
 
 tabla_nivel_estudios <- nivel_estudios_parseado %>%
@@ -201,17 +202,108 @@ grafico_nivel_estudios<- ggplot(datos_grafico_estudios,
 print(grafico_nivel_estudios)
 ```
 
-## 3. Contexto de Uso de TICs
+## 3. Uso de las TICS por comunidades autónomas.
+
+Vamos a ver la distribución de las TIC sobre el territorio español.
+
+>**Instrucciones:** Pase el ratón por encima de cada comunidad para ver el desglose detallado de uso de internet por grupos de edad.
+
+
+```{r}
+# Código extraído de: Mapa_España_TICS.R
+
+
+mapa_españa_ccaa <- esp_get_ccaa(moveCAN = TRUE)
+
+# Corrección para mapa
+uso_tic_total_corregido_mapa <- uso_tic_total %>%
+  mutate(
+    Comunidad = case_when(
+      Comunidad == "Balears, Illes" ~ "Baleares",
+      Comunidad == "Castilla - La Mancha" ~ "Castilla-La Mancha",
+      Comunidad == "Comunitat Valenciana" ~ "Comunidad Valenciana",
+      Comunidad == "Madrid, Comunidad de" ~ "Madrid",
+      Comunidad == "Murcia, Región de" ~ "Murcia",
+      Comunidad == "Navarra, Comunidad Foral de" ~ "Navarra",
+      Comunidad == "Rioja, La" ~ "La Rioja",
+      TRUE ~ Comunidad
+    )
+  )
+
+#Join para crear la tabla para representar el mapa
+
+mapa_con_datos <- mapa_españa_ccaa %>%
+  left_join(uso_tic_total_corregido_mapa, by = c("ccaa.shortname.es" = "Comunidad"))
+
+#Creación del mapa
+
+datos_mapa_coloreado <- mapa_con_datos %>%
+  mutate(
+    Uso_Global_Indice = (Frecuencia_Total_Adultos+ Frecuencia_Total_Niños+ Frecuencia_Total_Mayores)/3,
+    
+    
+    tooltip_data = paste0(
+      '<b>', ccaa.shortname.es, "</b><br>", 
+      "--------------------------<br>",
+      "Índice Global: ", round(Uso_Global_Indice, 1), "%<br>",
+      "Adultos: ", round(Frecuencia_Total_Adultos, 1), "%<br>",
+      "Niños: ", round(Frecuencia_Total_Niños, 1), "%<br>",
+      "Mayores: ", round(Frecuencia_Total_Mayores, 1), "%"
+    )
+  )
+
+mapa_intensidad <- ggplot(data = datos_mapa_coloreado) +
+  geom_sf(
+    aes(fill = Uso_Global_Indice, text = tooltip_data),
+    color = "white", size = 0.2 
+  ) +
+  geom_sf_text(
+    aes(label = ccaa.shortname.es), 
+    size = 2,         
+    color = "black",     
+    fontface = "bold",
+    check_overlap = TRUE 
+  ) +
+
+  scale_fill_gradient(
+    low = "#EBF5FB",   
+    high = "#21618C",  
+    name = "Intensidad de Uso"
+  ) +
+  
+  theme_void() +
+  labs(title = "Intensidad del uso de TICs en España ") +
+  theme(
+    legend.position = "right",
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
+
+#Para hacer el mapa interactivo
+
+mapa_final_españa <- ggplotly(mapa_intensidad, tooltip = "text") %>%
+  style(hoveron = "fills", traces = 1) %>% 
+  layout(
+    hoverlabel = list(bgcolor = "white", bordercolor = "black", font = list(color = "black"))
+  )
+
+mapa_final_españa
+
+
+```
+
+
+
+## 4. Contexto de Uso de TICs
 
 A continuación vamos a definir cual es el perfil de las personas que utilizan las TIC en España, observando en las distintas Comunidades Autónomas y clasificando por edad.
 
-1. **Niños (10-15 años):** Nativos digitales.
+1. **Niños (10-15 años):** 
 
-2. **Adultos (16-74 años):** Usuarios mayoritarios.
+2. **Adultos (16-74 años):** U
 
-3. **Mayores (75+ años):** Donde reside la mayor brecha de acceso.
-
+3. **Mayores (75+ años):** 
 ```{r}
+# Código extraído de: Mapa_España_TICS.R 
 
 # Corrección nombres
 uso_tic_total_corregido <- uso_tic_total %>%
@@ -261,85 +353,12 @@ ggplot(uso_tic_ordenada, aes(x=Comunidad, y=Frecuencia_Total, fill=Grupo_Edad))+
     y= "Porcentaje de Uso Promedio (%)",
     x= "",
     fill = "Grupo de Edad")+
-  scale_fill_brewer(palette = "Blues") +
+  scale_fill_brewer(palette = "Reds") +
   theme_classic()+
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1, size=10),
     legend.position = "top"
   )
-```
-
-## 4. Relación TICs con Depresión por Comunidades
-
-¿Existe un patrón territorial? Utilizamos un **mapa interactivo** para explorar si las comunidades más "conectadas" tienen mejores indicadores de salud mental.
-
->**Instrucciones:** Pase el ratón por encima de cada comunidad para ver el desglose detallado de uso de internet por grupos de edad.
-
-```{r}
-# Código extraído de: Mapa_España_TICS.R
-
-# AJUSTE: layout="l-page" es CRÍTICO aquí para que el mapa se vea grande y bonito.
-
-mapa_españa_ccaa <- esp_get_ccaa(moveCAN = TRUE)
-
-# Corrección para mapa
-uso_tic_total_corregido_mapa <- uso_tic_total %>%
-  mutate(
-    Comunidad = case_when(
-      Comunidad == "Balears, Illes" ~ "Baleares",
-      Comunidad == "Castilla - La Mancha" ~ "Castilla-La Mancha",
-      Comunidad == "Comunitat Valenciana" ~ "Comunidad Valenciana",
-      Comunidad == "Madrid, Comunidad de" ~ "Madrid",
-      Comunidad == "Murcia, Región de" ~ "Murcia",
-      Comunidad == "Navarra, Comunidad Foral de" ~ "Navarra",
-      Comunidad == "Rioja, La" ~ "La Rioja",
-      TRUE ~ Comunidad
-    )
-  )
-
-mapa_con_datos <- mapa_españa_ccaa %>%
-  left_join(uso_tic_total_corregido_mapa, by = c("ccaa.shortname.es" = "Comunidad"))
-
-# Tooltip arreglado para que se vea bien
-mapa_con_datos <- mapa_con_datos %>%
-  mutate(
-    tooltip_data = paste0(
-      '<b>', ccaa.shortname.es, "</b><br>", 
-      "Uso Adultos: ", round(Frecuencia_Total_Adultos, 1), "%<br>",
-      "Uso Niños: ", round(Frecuencia_Total_Niños, 1), "%<br>",
-      "Uso Mayores: ", round(Frecuencia_Total_Mayores, 1), "%"
-    )
-  )
-
-colores_ccaa <- c(
-  "Andalucía" = "#C0C0C0", "Aragón" = "#FFD700", "Asturias" = "#0000FF",            
-  "Baleares" = "#800080", "Canarias" = "#FFA500", "Cantabria" = "#008000",           
-  "Castilla y León" = "#B0C4DE", "Castilla-La Mancha" = "#FF0000",
-  "Comunidad Valenciana" = "#ADD8E6", "Extremadura" = "#8B4513",         
-  "Galicia" = "#40E0D0", "Madrid" = "#FFFF00", "Murcia" = "#FFC0CB",              
-  "Navarra" = "#A52A2A", "País Vasco" = "#00FF00", "La Rioja" = "#DA70D6",            
-  "Ceuta" = "#4682B4", "Melilla" = "#5F9EA0", "Cataluña" = "#FFDAB9"
-)
-
-mapa_estatico_gg <- ggplot(data = mapa_con_datos) +
-  geom_sf(
-    aes(fill = ccaa.shortname.es, text = tooltip_data),
-    color = "white", size = 0.2 
-  ) +
-  # Quitamos geom_sf_text porque a veces satura el mapa interactivo
-  scale_fill_manual(values = colores_ccaa) +
-  theme_void() +
-  theme(legend.position = "none")
-
-mapa_interactivo_gg <- ggplotly(mapa_estatico_gg, tooltip = "text")
-
-mapa_interactivo_final <- mapa_interactivo_gg %>%
-  style(hoveron = "fills", traces = 1) %>% 
-  layout(
-    hoverlabel = list(bgcolor = "white", bordercolor = "black", font = list(color = "black"))
-  )
-
-mapa_interactivo_final
 ```
 
 ## 5. Relación TICs con Depresión por Nivel de Estudios
