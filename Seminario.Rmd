@@ -1,11 +1,12 @@
 ---
 title: "Impacto de las TIC en la Salud Mental"
 output: 
-  html_document: 
+  html_document:
+    css: "style.css" 
     toc: true
     toc_depth: 6
     toc_float: true
-    theme: united
+    theme: flatly
     highlight: tango
     
       
@@ -17,15 +18,6 @@ author: "Iván Vallejo Cabrero y Diego Ugarte López"
 ---
 
 
-```{=html}
-<style>
-  body {
-    background-color: #A7E09D; 
-    font-size: 18px;
-    line-height: 1.6;
-  }
-</style>
-```
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
