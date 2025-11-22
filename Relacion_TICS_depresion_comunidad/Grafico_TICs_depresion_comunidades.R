@@ -28,7 +28,8 @@ uso_tic_adultos<-adultos_tabla%>%
       Comunidad == "Melilla" ~ "Melilla",
       
       TRUE ~ Comunidad
-    ))
+    )
+  )
 
 View(uso_tic_adultos)
 
@@ -39,13 +40,11 @@ View(uso_tic_adultos)
 
 tabla_tics_depresion_comunidades<- uso_tic_adultos%>% 
   left_join(depresion_por_comunidades_corregido, by = "Comunidad")
+view(tabla_tics_depresion_comunidades)
 
-tabla_tics_depresion_comunidades$Porcentaje_depresion <- as.numeric( tabla_tics_depresion_comunidades$Porcentaje_depresion)
 
 
-View(tabla_tics_depresion_comunidades)
-
-ggplot(data = tabla_tics_depresion_comunidades, aes(x = Frecuencia_Total_Adultos, y = Porcentaje_depresion)) +
+grafico_TICs_depresion_comunidad<-ggplot(data = tabla_tics_depresion_comunidades, aes(x = Frecuencia_Total_Adultos, y = Porcentaje_depresion)) +
   
   geom_point(aes(colour = Comunidad), size = 3) +
 
@@ -56,7 +55,7 @@ ggplot(data = tabla_tics_depresion_comunidades, aes(x = Frecuencia_Total_Adultos
   labs(
     title = "Relación entre Frecuencia Total de Adultos y % de Depresión",
     subtitle = "Línea de tendencia global",
-    x = "Frecuencia Total Adultos",
+    x = "Frecuencia TICs Adultos",
     y = "Porcentaje de Depresión"
   ) +  
   guides(color= "none")+
@@ -65,26 +64,7 @@ ggplot(data = tabla_tics_depresion_comunidades, aes(x = Frecuencia_Total_Adultos
 
  
   
-  ggplot(tabla_tics_depresion_comunidades, 
-         aes(x = Frecuencia_Total_Adultos, y = Porcentaje_depresion)) +
-  
-  geom_point(aes(size = Desviacion_estandar_Adultos, color = Comunidad), alpha = 0.7) +
-
-  geom_smooth(method = "lm", color = "red", se = FALSE) +
-  
-  geom_text_repel(aes(label = Comunidad), size = 3) +
-  
-  labs(
-    title = "Correlación TICs vs Depresión (desv.estándar)",
-    subtitle = "El tamaño del punto indica la Desviación Estándar (variabilidad) del uso de TICs",
-    x = "Uso Promedio de TICs (Adultos, %)",
-    y = "Prevalencia de Depresión (%)",
-    size = "Desviación Estándar"
-  ) +
-    
-  theme_classic() +
-  guides(color= "none", size = "legend")
-
+grafico_TICs_depresion_comunidad
 #CONCLUSIÓN de este gráfico, tendría q aparecer una linea de tendencia pero no aparece pq los datos no están lo suficientemente correlacionados
 #en nuestro gráfico de dispersión vemos que cad dato esta en unpunto bastante alejado poreque no hay una correlación entre la depresion y las tic
 #el impacto de las tic en salud mental no es un factor geográfico lo que influye.

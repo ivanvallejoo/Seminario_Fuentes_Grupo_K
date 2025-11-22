@@ -11,7 +11,10 @@ grafico_salud_empleo <- df_salud_empleo %>%
   ggplot(mapping = aes(x = reorder(Actividad, -Tasa_Depresion), y = Tasa_Depresion)) +
   
   
-  geom_bar(stat = "identity", aes(fill = Tasa_Depresion == max(Tasa_Depresion)), width = 0.6, alpha = 0.9) +
+  geom_bar(stat = "identity", 
+           aes(fill = Tasa_Depresion == max(Tasa_Depresion)), 
+           width = 0.6, 
+           alpha = 0.9) +
   
   geom_text(aes(label = paste0(Tasa_Depresion, "%")), 
             vjust = -0.5, 

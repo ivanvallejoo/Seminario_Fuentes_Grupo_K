@@ -32,17 +32,17 @@ library(tidyverse)
 library(dplyr)
 library(readr)
 library(tidyr)
+library(stringr)
+library(jsonlite)
 library(ggplot2)
 library(ggthemes)
 library(ggtext)
 library(ggrepel)
-library(ggforce)
 library(patchwork)
 library(sf)
 library(mapSpain)
 library(plotly)
-library(jsonlite)
-library(stringr)
+
 
 ```
 
@@ -66,14 +66,12 @@ Utilizaremos datos procesados con **R**, provenientes de la siguiente fuente ofi
 
 --- 
 
-<br>
-
 
 ## 2. Contexto de Salud Mental
 
 Para entender la magnitud del problema, primero analizamos la distribución de la depresión según los siguientes factores.
 
-**Depresión por Situación Laboral y Sexo**
+### **Depresión por Situación Laboral y Sexo**
 
 Se representa en el eje x el porcentaje de cuadros depresivos, en el eje y la situación laboral y se dividen los resultados en hombres y mujeres.
 
@@ -147,14 +145,13 @@ print(g_actividad_apilado)
 
 <br>
 
-**Intensidad de la Depresión por nivel de estudios**
+### **Intensidad de la Depresión por nivel de estudios**
 
 Analizamos la gravedad de la depresión en función de los estudios.
 
 * Vemos de nuevo que la depresión afecta más al grupo de las mujeres que al grupo de los hombres.
 * También vemos como a mayor nivel de estudios, menor porcentaje de depresión.
-
-> Dato Crítico: Personas que tienen un nivel de estudios inferior, son las que más cuadros depresivos padecen.
+* Personas que tienen un nivel de estudios inferior, son las que más cuadros depresivos padecen.
 
 <br>
 
@@ -206,7 +203,10 @@ print(grafico_nivel_estudios)
 
 <br>
 
-## 3. Uso de las TICS por comunidades autónomas.
+## 3. Contexto de las TICs
+
+
+### **Mapa de España uso de las TICs por rango de edad y comunidades autónomas**
 
 Vamos a ver la distribución de las TIC sobre el territorio español.
 
@@ -216,7 +216,6 @@ Las zonas más oscuras es donde más uso de las TICs hay, las zonas menos claras
 
 <br>
 
->**Instrucciones:** Pase el ratón por encima de cada comunidad para ver el las etiquetas de cada comunidad de uso de internet por grupos de edad.
 
 
 ```{r warning=FALSE, message=FALSE}
@@ -309,9 +308,8 @@ Podemos observar que las zonas con mayor densidad de población presentan los í
 
 Como conclusión de este mapa vemos que el uso de las TICs se concentra donde hay **más gente** y **más joven**. 
 
-<br>
 
-## 4. Contexto de Uso de TICs
+### **Gráfico de barras uso de las TICs por rango de edad y comunidades autónomas**
 
 A continuación vamos a definir cual es el perfil de las personas que utilizan las TIC en España, observando en las distintas Comunidades Autónomas y clasificando por edad.
 
@@ -320,9 +318,12 @@ A continuación vamos a definir cual es el perfil de las personas que utilizan l
 2. **Adultos (16-74 años):** 
 
 3. **Mayores (75+ años):** 
+
+<br>
+
 ```{r warning=FALSE, message=FALSE}
 
-# Código extraído de: Mapa_España_TICS.R 
+# Código extraído de: Grafico_barras_TICs.R 
 
 # Corrección nombres
 uso_tic_total_corregido <- uso_tic_total %>%
@@ -370,20 +371,136 @@ ggplot(uso_tic_ordenada, aes(x=Comunidad, y=Frecuencia_Total, fill=Grupo_Edad))+
   )
 ```
 
-## 5. Relación TICs con Depresión por Nivel de Estudios
+Vemos que el uso de las TICs es significativamente mayor en niños y adultos independientemente de la comunidad autónoma en la que nos encontremos.
 
-Analizamos si la **educación** actúa como *factor protector*. El siguiente gráfico de doble eje muestra un cruce revelador:
+Como conclusión vamos a definir que nuestro perfil de personas que utilizan las TICs claramente son tanto jóvenes como adultos.
 
-* <span style="color: #1f77b4"><b>Línea Azul (TICs):</b></span> A mayor nivel educativo, mayor uso de tecnología.
+Para enfocar nuestro seminario a partir de ahora nos centraremos en el grupo mayoritario en casi todas las comunidades, es decir, los adultos.
 
-* <span style="color: #d62728"><b>Línea Roja (Depresión):</b></span> A mayor nivel educativo, la depresión cae drásticamente.
+<br>
+
+## 4. Relación TICs con Depresión por Comunidad Autónoma
+
+> **Pregunta 2:** ¿Existe un patrón geográfico que vincule la intensidad de uso de las TICs con la prevalencia de la depresión en las distintas Comunidades Autónomas?
+
+En este gráfico podemos observar cada comunidad autónoma situada en función de dos variables, la frecuencia del uso de internet (en adultos) y el porcentaje de cuadros depresivos.
+
+Hemos dibujado una línea de tendencia para ver cuáles son las comunidades autónomas cuya correlación de depresión con frecuencia de uso es adecuada y sigue el modelo.
+
+La sombra dibujada indica el intervalo de confianza, aquellas comunidades autónomas que estan dentro son las que tienen un comportamiento estadísticamente correcto, quiere decir que el porcentaje de depresión corresponde con el uso de las TICs.
+
+<br>
 
 ```{r warning=FALSE, message=FALSE}
+
+# Código extraído de: Grafico_Tics_depresion_comunidades.R y Tabla_depresion_sexo_comunidades.R
+
+uso_tic_adultos<-adultos_tabla%>% 
+  filter(Comunidad != "Total nacional") %>% 
+  mutate(
+    Comunidad = case_when(
+      Comunidad == "Andalucía" ~ "Andalucía",
+      Comunidad == "Aragón" ~ "Aragón",
+      Comunidad == "Asturias, Principado de" ~ "Asturias",
+      Comunidad == "Balears, Illes" ~ "Baleares",
+      Comunidad == "Canarias" ~ "Canarias",
+      Comunidad == "Cantabria" ~ "Cantabria",
+      Comunidad == "Castilla y León" ~ "Castilla y León",
+      Comunidad == "Castilla - La Mancha" ~ "Castilla - La Mancha",
+      Comunidad == "Comunitat Valenciana" ~ "Comunidad Valenciana",
+      Comunidad == "Extremadura" ~ "Extremadura",
+      Comunidad == "Galicia" ~ "Galicia",
+      Comunidad == "Madrid, Comunidad de" ~ "Madrid",
+      Comunidad == "Murcia, Región de" ~ "Murcia",
+      Comunidad == "Navarra, Comunidad Foral de" ~ "Navarra",
+      Comunidad == "País Vasco" ~ "País Vasco",
+      Comunidad == "Rioja, La" ~ "La Rioja",
+      Comunidad == "Ceuta" ~ "Ceuta",
+      Comunidad == "Melilla" ~ "Melilla",
+      
+      TRUE ~ Comunidad
+    )
+  )
+
+
+depresion_por_comunidades_corregido<- depresion_por_comunidades %>% 
+  mutate(
+    Comunidad = case_when(
+      Comunidad == "Andalucía" ~ "Andalucía",
+      Comunidad == "Aragón" ~ "Aragón",
+      Comunidad == "Asturias (Principado de)" ~ "Asturias",
+      Comunidad == "Balears (Illes)" ~ "Baleares",
+      Comunidad == "Canarias" ~ "Canarias",
+      Comunidad == "Cantabria" ~ "Cantabria",
+      Comunidad == "Castilla y León" ~ "Castilla y León",
+      Comunidad == "Castilla -La Mancha" ~ "Castilla - La Mancha",
+      Comunidad == "Comunitat Valenciana" ~ "Comunidad Valenciana",
+      Comunidad == "Extremadura" ~ "Extremadura",
+      Comunidad == "Galicia" ~ "Galicia",
+      Comunidad == "Madrid (Comunidad de)" ~ "Madrid",
+      Comunidad == "Murcia (Región de)" ~ "Murcia",
+      Comunidad == "Navarra (Comunidad Foral de)" ~ "Navarra",
+      Comunidad == "País Vasco" ~ "País Vasco",
+      Comunidad == "Rioja (La)" ~ "La Rioja",
+      Comunidad == "Ceuta (Ciudad Autónoma de)" ~ "Ceuta",
+      Comunidad == "Melilla (Ciudad Autónoma de)" ~ "Melilla",
+      
+      TRUE ~ Comunidad
+    ),
+    Porcentaje_depresion = parse_number(Porcentaje_depresion, locale = locale(decimal_mark = ","))
+  )
+
+tabla_tics_depresion_comunidades<- uso_tic_adultos%>% 
+  left_join(depresion_por_comunidades_corregido, by = "Comunidad")
+
+grafico_TICs_depresion_comunidad<-ggplot(data = tabla_tics_depresion_comunidades, 
+                                         aes(x = Frecuencia_Total_Adultos, 
+                                             y = Porcentaje_depresion)) +
+  
+  geom_point(aes(colour = Comunidad), size = 3) +
+
+  geom_smooth(method = "lm", se = TRUE, color = "black", linetype = "dashed") +
+  
+  geom_text_repel(aes(label = Comunidad), size = 3)+
+  
+  labs(
+    title = "Relación entre Frecuencia Total de Adultos y % de Depresión",
+    subtitle = "Línea de tendencia global",
+    x = "Frecuencia TICs Adultos",
+    y = "Porcentaje de Depresión"
+  ) +  
+  guides(color= "none")+
+  
+  theme_minimal()
+
+ 
+  
+  grafico_TICs_depresion_comunidad
+  
+```
+
+Comunidades autónomas con mayor uso de TICs tienen menores tasas de depresión como por ejemplo Melilla, las comunidades con menor uso de las TICs tienen valores de depresión parecidos o incluso más altos.
+
+
+Generalmente podemos afirmar que cuanta mayor conexión digital menos depresión.
+
+## 5. Relación TICs con Depresión por Nivel de Estudios
+
+> **Pregunta 3:** ¿Cómo influye el nivel de estudios en la relación entre el uso de las TICs y la prevalencia de la depresión?
+
+A continuación, presentamos un gráfico que analiza la interacción entre el uso de las TICs y la salud mental, tomando como factor el nivel de estudios (clasificado en básico, intermedio y superior).
+
+* La línea azul representa la evolución del uso de las TICs.
+
+* La línea roja ilustra la tasa de depresión.
+
+El objetivo del gráfico es observar cómo se comportan y correlacionan ambas variables
+
+<br>
+```{r warning=FALSE, message=FALSE}
+
 # Código extraído de: Grafico_nivel_estudios.R
 
-# AJUSTE: fig.height=6 y l-body-outset para que las líneas se vean claras.
-
-if(exists("tabla_nivel_estudios_final")){
   
   max_tics <- max(tabla_nivel_estudios_final$Porcentaje_TICS, na.rm = TRUE)
   max_depresion <- max(tabla_nivel_estudios_final$Porcentaje_Depresion, na.rm = TRUE)
@@ -404,6 +521,7 @@ if(exists("tabla_nivel_estudios_final")){
     
     scale_y_continuous(
       name = "Uso de TICs (%)",
+      expand = expansion(mult = c(0.2, 0.2)), 
       sec.axis = sec_axis(~ . / factor_escala, name = "Depresión (%)")
     ) +
     
@@ -413,8 +531,6 @@ if(exists("tabla_nivel_estudios_final")){
       name = "Nivel de Estudios"
     ) +
     
-    scale_color_manual(values = c("Uso de TICs" = "#1f77b4", "Depresión" = "#d62728")) +
-    
     labs(
       title = "Nivel de Estudios: Factor Protector",
       subtitle = "Relación inversa entre adopción tecnológica y depresión",
@@ -422,21 +538,30 @@ if(exists("tabla_nivel_estudios_final")){
     ) +
     theme_classic() +
     theme(legend.position = "bottom")
-}
 ```
+
+
+Aquí vemos claramente cómo el nivel de estudios marca la diferencia. Las personas con formación superior son las que más utilizan la tecnología, mientras que en los niveles básicos el uso cae drásticamente.
+
+Lo interesante es que esto encaja perfectamente con lo que vimos antes: al aumentar el nivel de estudios, sube el uso de las TICs y baja la depresión. Es decir, la formación superior no solo garantiza más conectividad, sino también una mejor salud mental."
+
+
 
 ## 6. Relación TICs con Empleabilidad
 
-Finalmente, llegamos a la **"Paradoja Digital"**. A menudo se asume que la conexión digital mejora las oportunidades, pero los datos muestran una realidad más compleja.
+> **Pregunta 3:** ¿Influye la situación laboral en la relación entre tecnología y salud mental?
 
-Comparamos dos grupos con niveles similares de uso de internet, pero realidades opuestas:
+En nuestro gráfico de barras horizontales de salud mental por situación laboral hemos ordenado a los distintos grupos de población según su tasa de prevalencia de Cuadro Depresivo Mayor.
 
-1. **Estudiantes**: Alta conectividad y baja depresión.
+Vemos que el grupo incapacitado para trabajar representa la mayor tasa de depresión lo cuál es lógico.
 
-2. **Desempleados**: Alta conectividad y <span style="color: #C0392B"><b>Muy alta depresión</b></span>.
+Si nos fijamos en el resto de barras vemos que las personas en desempleo tienen una mayor tasa de depresióna a aquellas personas que se encuentran trabajando.
 
+Ahora vamos a ver si verdaderamente las TICs afectan a los niveles de depresión en el gráfico de **Interacción entre Conectividad, Situación Laboral y Salud Mental**.
 
-```{r relacion_empleabilidad, fig.height=14, fig.width=10, out.width="100%"}
+<br>
+
+```{r relacion_empleabilidad, warning=FALSE, message=FALSE, fig.height=14, fig.width=10}
 
 # ==============================================================================
 # 1. DATOS SALUD (EMPLEO)
@@ -569,8 +694,8 @@ grafico_depresion_tics_empleo <- df_final %>%
                                "Otros" = "#EBF5FB")) +      
   
   labs(
-    title = "B. La Paradoja Digital",
-    subtitle = "Comparativa: Estudiantes vs Parados",
+    title = "Interacción entre Conectividad, Situación Laboral y Salud Mental",
+    subtitle = "Comparativa: Estudiantes vs Desempleados",
     x = "Uso Diario de Internet (%)", 
     y = "Depresión Mayor (%)"
   ) +
@@ -588,9 +713,17 @@ grafico_depresion_tics_empleo <- df_final %>%
 # ==============================================================================
 composicion_graficos_empleo <- grafico_salud_empleo / grafico_depresion_tics_empleo + 
   plot_annotation(
-    title = 'IMPACTO DEL TRABAJO Y LA BRECHA DIGITAL EN LA SALUD MENTAL',
+    title = 'IMPACTO DEL TRABAJO Y TICs EN LA SALUD MENTAL',
     theme = theme(plot.title = element_text(size = 20, face = "bold", hjust = 0.5))
   )
 
 print(composicion_graficos_empleo)
 ```
+
+De aquí se pueden sacar una serie de conclusiones: 
+
+1. **El paro es el enemigo nº 1**: El desempleo dispara el riesgo de depresión más que cualquier otra cosa.
+
+2. **Tener internet no te salva**: Los desempleados usan internet tanto como los estudiantes, pero tienen muchísima más depresión. La tecnología no es una "vacuna" contra el malestar del paro.
+
+3. **Estar ocupado protege**: Trabajar o estudiar son los verdaderos escudos para la salud mental, no la conexión digital.

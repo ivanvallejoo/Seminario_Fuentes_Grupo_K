@@ -36,7 +36,7 @@ depresion_por_comunidades_corregido<- depresion_por_comunidades %>%
       Comunidad == "Melilla (Ciudad Autónoma de)" ~ "Melilla",
       
       TRUE ~ Comunidad
-    )
+    ),
+    Porcentaje_depresion = parse_number(Porcentaje_depresion, locale = locale(decimal_mark = ","))
   )
 View(depresion_por_comunidades_corregido)
-View(uso_tic_total_corregido)
