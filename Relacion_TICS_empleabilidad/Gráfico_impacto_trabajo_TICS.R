@@ -1,98 +1,118 @@
 library(stringr)
-library(ggthemes)  # Estilos visuales (FiveThirtyEight)
-library(ggtext)    # Títulos con formato HTML/Markdown
-library(ggrepel)   # Evitar solapamiento de etiquetas
-library(ggforce)   # Anotaciones inteligentes (elipses)
-library(patchwork) # Composición de múltiples gráficos
+library(ggthemes)  
+library(ggtext)    
+library(ggrepel)   
+library(patchwork) 
 library(ggplot2)
+library(dplyr) 
 
-# ==============================================================================
-# 4. VISUALIZACIÓN: GRÁFICO 1 (EL CONTEXTO)
-# ==============================================================================
-g1 <- ggplot(df_contexto, aes(x = reorder(Actividad, -Tasa_Depresion), y = Tasa_Depresion)) +
-  # Barras con color condicional (Rojo para desempleo)
-  geom_col(aes(fill = Color_Barra), width = 0.6, alpha = 0.9) + 
+
+grafico_salud_empleo <- df_salud_empleo %>% 
+  ggplot(mapping = aes(x = reorder(Actividad, -Tasa_Depresion), y = Tasa_Depresion)) +
   
-  # Etiquetas numéricas sobre las barras
+  
+  geom_bar(stat = "identity", aes(fill = Tasa_Depresion == max(Tasa_Depresion)), width = 0.6, alpha = 0.9) +
+  
   geom_text(aes(label = paste0(Tasa_Depresion, "%")), 
-            vjust = -0.5, fontface = "bold", color = "#2C3E50", size = 3.5) +
+            vjust = -0.5, 
+            fontface = "bold", 
+            colour = "#2C3E50", 
+            size = 3.5) +
   
-  scale_fill_identity() +
-  # Truco técnico: str_wrap parte los textos largos del eje X
-  scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 10)) + 
-  scale_y_continuous(limits = c(0, max(df_contexto$Tasa_Depresion) + 1.5)) +
   
-  # Títulos con formato HTML (ggtext)
+  scale_fill_manual(values = c("FALSE" = "#EBF5FB", "TRUE" = "#21618C"), guide = "none") +
+  
+  scale_y_continuous(expand = expansion(mult = c(0, .1))) +
+  
   labs(
-    title = "<span style='font-size:14pt'>1. El Contexto</span>",
-    subtitle = "El <span style='color:#C0392B'><b>Desempleo</b></span> es el factor crítico en la salud mental base.",
-    x = "", y = ""
+    x = NULL, 
+    y = "Tasa de Depresión (%)",
+    title = "Salud Mental en función de la Situación Laboral",
+    subtitle = "El desempleo es el factor más crítico."
   ) +
   
-  theme_fivethirtyeight() +
+  theme_classic() +
   theme(
-    plot.title = element_markdown(face = "bold"),
-    plot.subtitle = element_markdown(size = 10),
-    axis.text.x = element_text(size = 8.5, face = "bold", lineheight = 0.9),
-    axis.text.y = element_blank(),
-    panel.grid.major = element_blank(),
-    plot.background = element_rect(fill = "white", color = NA),
-    panel.background = element_rect(fill = "white", color = NA)
+    plot.title = element_text(face = "bold", size = 14, hjust = 0),
+    axis.text.x = element_text(size = 9, face = "bold", color = "black"), 
+    axis.text.y = element_blank(), 
+    axis.ticks.y = element_blank(),
+    axis.line.y = element_blank()
   )
+
+
+print(grafico_salud_empleo)
 
 # ==============================================================================
 # 5. VISUALIZACIÓN: GRÁFICO 2 (EL GIRO)
 # ==============================================================================
-g2 <- ggplot(df_final_narrativa, aes(x = Tasa_Internet, y = Tasa_Depresion)) +
-  # Línea de tendencia
-  geom_smooth(method = "lm", se = FALSE, color = "aquamarine1", linetype = "solid", size = 1) +
+library(ggplot2)
+library(ggrepel)
+library(dplyr)
+
+View(df_final)
+
+grafico_depresion_tics_empleo<- df_final %>% 
   
-  # Puntos principales con borde blanco (estilo 'pop')
-  geom_point(aes(fill = Clave_Union), size = 6, shape = 21, color = "white", stroke = 1.5) +
+  mutate(Grupo = case_when(
+    Situacion_laboral == "Estudiando" ~ "Estudiantes",
+    Situacion_laboral == "En desempleo" ~ "Parados",
+    TRUE ~ "Otros" 
+  )) %>% 
   
-  # ggforce: Elipse para resaltar la paradoja (Estudiantes vs Parados)
-  geom_mark_ellipse(aes(filter = Clave_Union %in% c("En desempleo", "Estudiando"),
-                        label = Clave_Union,
-                        description = "Perfiles opuestos"),
-                    label.fontsize = 8, 
-                    label.buffer = unit(5, "mm"),
-                    con.cap = 0,
-                    color = "grey50") +
+  ggplot(aes(x = Tasa_Internet, y = Tasa_Depresion)) +
   
-  # ggrepel: Etiquetas para el resto de puntos sin solapamiento
-  geom_text_repel(aes(label = Clave_Union), 
-                  data = subset(df_final_narrativa, !Clave_Union %in% c("En desempleo", "Estudiando")),
-                  size = 3.5, color = "grey40", point.padding = 0.5) +
+  geom_smooth(method = "lm", 
+              se = FALSE, 
+              color = "black", 
+              size = 1, linetype= 
+                "dashed") +
   
-  scale_fill_tableau() +
+  
+  geom_point(aes(fill = Grupo), 
+             size = 4, 
+             shape = 21, 
+             color = "white", 
+             stroke = 1) +
+  
+  geom_text_repel(aes(label = Situacion_laboral), 
+                  size = 3.5, 
+                  color = "grey40",
+                  box.padding = 0.6) +
+  
+  scale_fill_manual(values = c("Estudiantes" = "#F28E2B", 
+                               "Parados" = "#21618C",     
+                               "Otros" = "#EBF5FB")) +     
+  
+  
   labs(
-    title = "<span style='font-size:14pt'>2. El Giro (TICs)</span>",
-    subtitle = "Alta tecnología no garantiza salud mental: comparar <b style='color:#F28E2B'>Estudiantes</b> vs <b style='color:#094B5B'>Parados</b>.",
+    title = "Añadiendo las TICs",
+    subtitle = "Comparativa: Estudiantes vs Parados",
     x = "Uso Diario de Internet (%)", 
-    y = "Depresión Mayor (%)",
-    caption = "Fuente: Elaboración propia con datos INE"
+    y = "Depresión Mayor (%)"
   ) +
   
-  theme_minimal(base_size = 12) +
+  theme_classic() +
   theme(
-    plot.title = element_markdown(face = "bold"),
-    plot.subtitle = element_markdown(size = 10),
-    legend.position = "none",
-    axis.title = element_text(size = 9, face = "bold", color = "grey40"),
-    panel.grid.minor = element_blank(),
-    panel.grid.major = element_line(color = "grey95")
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(size = 11, color = "grey30"),
+    axis.text = element_text(face = "bold")
   )
+
+# Imprimir gráfico
+print(grafico_depresion_tics_empleo)
+
+
 
 # ==============================================================================
 # 6. COMPOSICIÓN FINAL (PATCHWORK)
 # ==============================================================================
-layout_final <- g1 + g2 + 
+ composicion_graficos_empleo<- grafico_salud_empleo / grafico_depresion_tics_empleo + 
   plot_annotation(
     title = 'IMPACTO DEL TRABAJO Y LA BRECHA DIGITAL EN LA SALUD MENTAL',
-    subtitle = 'Análisis cruzado de Encuesta Europea de Salud y Encuesta TIC',
-    theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5))
+    theme = theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
   )
 
-# Mostrar resultado final
-print(layout_final)
+
+print(composicion_graficos_empleo)
 

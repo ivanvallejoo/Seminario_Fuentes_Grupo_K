@@ -1,10 +1,12 @@
 library(dplyr)
-library(readr)  # Para parse_number
+library(readr)
 library(tidyr)
 library(ggplot2)
 
 View(mis_datos_salud_mental$depresion_actividad_economica)
-df_contexto <- mis_datos_salud_mental$depresion_actividad_economica %>%
+
+
+df_salud_empleo <- mis_datos_salud_mental$depresion_actividad_economica %>%
   rename(
     Actividad = `Actividad.económica`,
     Tipo_Depresion = `Prevalencia.depresión`,
@@ -17,19 +19,18 @@ df_contexto <- mis_datos_salud_mental$depresion_actividad_economica %>%
   ) %>%
   mutate(
     Tasa_Depresion = parse_number(Porcentaje, locale = locale(decimal_mark = ",")),
-    Clave_Union = case_when(
-      # Intentamos capturar variantes comunes por si acaso
+    Situacion_laboral = case_when(
       Actividad %in% c("Parado/a", "Parados", "En desempleo", "Desempleado") ~ "En desempleo",
       Actividad == "Jubilado/a o prejubilado/a" ~ "Jubilado/Pensionista",
       Actividad == "Labores del hogar" ~ "Labores del hogar",
       Actividad == "Incapacitado/a para trabajar" ~ "Incapacitado",
+      Actividad == "Estudiando"~"Estudiando",
+      Actividad == "Trabajando"~"Trabajando",
       TRUE ~ "Otros"
     )
   )
-    
-    # Lógica visual simple
-df_contexto <- df_contexto %>%
-  mutate(Color_Barra = ifelse(Tasa_Depresion == max(Tasa_Depresion, na.rm=TRUE), "#C0392B", "#95A5A6"))
+
+View(df_salud_empleo)
 
 # ==============================================================================
 # 2. DATOS TIC (Uso de Internet)
@@ -42,8 +43,8 @@ lista_frecuencias <- c(
   "Han utilizado internet varias veces al día"
 )
 
-df_tic_preparado <- mis_datos_tic$uso_internet_socioeconomico %>%
-  S
+df_tic_empleo <- mis_datos_tic$uso_internet_socioeconomico %>%
+  
   rename(
     Grupo = Clase.de.población, 
     Características = Características.socioeconómicas, 
@@ -51,7 +52,6 @@ df_tic_preparado <- mis_datos_tic$uso_internet_socioeconomico %>%
     Total_TIC = Total
   ) %>%
   
-  # 2. Filtros (usando grepl para buscar "diariamente")
   filter(
     Grupo == "Total de personas (16 a 74 años)",
     Frecuencia %in% lista_frecuencias
@@ -62,7 +62,7 @@ df_tic_preparado <- mis_datos_tic$uso_internet_socioeconomico %>%
  
     Tasa_Internet = parse_number(Total_TIC, locale = locale(decimal_mark = ",")),
     
-    Clave_Union = case_when(
+    Situacion_laboral = case_when(
       Características == "Situación laboral: Activos ocupados" ~ "Trabajando",
       Características == "Situación laboral: Activos parados" ~ "En desempleo",
       Características == "Situación laboral: Inactivos: Estudiantes" ~ "Estudiando",
@@ -73,15 +73,15 @@ df_tic_preparado <- mis_datos_tic$uso_internet_socioeconomico %>%
   ) %>%
   
   
-  group_by(Clave_Union) %>%
+  group_by(Situacion_laboral) %>%
   summarise(Tasa_Internet = mean(Tasa_Internet, na.rm = TRUE))
 
-View(df_tic_preparado)
+View(df_tic_empleo)
 # ==============================================================================
 # 3. UNIÓN FINAL
 # ==============================================================================
-df_final<- left_join(df_contexto, df_tic_preparado, by = "Clave_Union") %>%
+df_final<- left_join(df_salud_empleo, df_tic_empleo, by = "Situacion_laboral") %>%
   filter(!is.na(Tasa_Internet)) %>% 
-  select(Clave_Union, Tasa_Depresion, Tasa_Internet, Color_Barra)
+  select(Situacion_laboral, Tasa_Depresion, Tasa_Internet)
 
 View(df_final)

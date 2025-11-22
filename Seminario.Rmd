@@ -328,7 +328,8 @@ A continuación vamos a definir cual es el perfil de las personas que utilizan l
 2. **Adultos (16-74 años):** 
 
 3. **Mayores (75+ años):** 
-```{r}
+```{r warning=FALSE, message=FALSE}
+
 # Código extraído de: Mapa_España_TICS.R 
 
 # Corrección nombres
@@ -385,7 +386,7 @@ Analizamos si la **educación** actúa como *factor protector*. El siguiente gr�
 
 * <span style="color: #d62728"><b>Línea Roja (Depresión):</b></span> A mayor nivel educativo, la depresión cae drásticamente.
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 # Código extraído de: Grafico_nivel_estudios.R
 
 # AJUSTE: fig.height=6 y l-body-outset para que las líneas se vean claras.
@@ -443,7 +444,8 @@ Comparamos dos grupos con niveles similares de uso de internet, pero realidades 
 2. **Desempleados**: Alta conectividad y <span style="color: #C0392B"><b>Muy alta depresión</b></span>.
 
 
-```{r relacion_empleabilidad, fig.height=14, fig.width=10, layout="l-body-outset"}
+```{r warning=FALSE, message=FALSE}
+
 df_contexto <- mis_datos_salud_mental$depresion_actividad_economica %>%
   rename(
     Actividad = `Actividad.económica`,
