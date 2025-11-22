@@ -5,11 +5,11 @@
 body {
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.6;         
   color: #333333;             
-  text-align: justify;        
-  background-color: #f4f6f7;
+  text-align: justify;
+  background-color: #BEC0E3;
 }
 
 /* 3. Estilos de los Títulos (H1 - H6) */
@@ -20,9 +20,3 @@ h1, h2, h3 {
   margin-top: 1.5em;          
 }
 
-/* 4. AJUSTE DE ANCHO */
-.main-container {
-    max-width: 1200px; 
-    margin-left: auto;
-    margin-right: auto;
-}
