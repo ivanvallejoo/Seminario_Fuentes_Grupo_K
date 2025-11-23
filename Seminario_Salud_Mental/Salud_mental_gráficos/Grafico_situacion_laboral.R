@@ -40,5 +40,14 @@ g_actividad_apilado <- ggplot(tabla_sitaucion_laboral,
     plot.title = element_text(face = "bold")
   )
 
+ggsave(
+  filename = "OUTPUT/figuras/grafico_depresion_situacion_laboral_sexo.png",
+  plot = g_actividad_apilado,
+  width = 12,
+  height = 8,
+  dpi = 300,
+  bg = "white"
+)
+
 # Imprimir el gráfico
 print(g_actividad_apilado)

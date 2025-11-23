@@ -52,7 +52,7 @@ uso_tic_ordenada<- uso_tic_total_pivotada %>%
 
 View(uso_tic_ordenada)
 
-ggplot(uso_tic_ordenada, aes(x=Comunidad, y=Frecuencia_Total, fill=Grupo_Edad))+
+grafico_barras_TICs <- ggplot(uso_tic_ordenada, aes(x=Comunidad, y=Frecuencia_Total, fill=Grupo_Edad))+
   geom_bar(stat = "identity", position = "dodge")+
   labs(
     title= "Perfil de Uso Frecuente de las TIC por Edad y Comunidad",
@@ -61,3 +61,12 @@ ggplot(uso_tic_ordenada, aes(x=Comunidad, y=Frecuencia_Total, fill=Grupo_Edad))+
     fill = "Grupo de Edad")+
   theme_classic()+
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+ggsave(
+  filename = "OUTPUT/figuras/grafico_barras_tics_comunidad.png",
+  plot = grafico_barras_TICs,
+  width = 12,
+  height = 8,
+  dpi = 300,
+  bg = "white"
+)
