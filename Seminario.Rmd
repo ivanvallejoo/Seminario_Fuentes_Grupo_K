@@ -163,12 +163,6 @@ Para entender la magnitud del problema, primero analizamos la distribución de l
 
 Se representa en el eje x el porcentaje de cuadros depresivos, en el eje y la situación laboral y se dividen los resultados en hombres y mujeres.
 
-En el siguiente gráfico vemos datos depresivos mayores en mujeres que en hombres.
-
-
-> Dato Crítico: El grupo de Desempleo presenta las tasas más altas de Cuadro Depresivo Mayor, superando significativamente al grupo que trabaja .
-
-
 ```{r warning=FALSE, message=FALSE}
   # Código extraído de: Tabla_situacion_laboral.R y Grafico_situacion_laboral.R
   
@@ -229,6 +223,9 @@ En el siguiente gráfico vemos datos depresivos mayores en mujeres que en hombre
 print(g_actividad_apilado)
 
 ```
+En el gráfico anterior vemos datos depresivos mayores en mujeres que en hombres.
+
+> Dato Crítico: El grupo de Desempleo presenta las tasas más altas de Cuadro Depresivo Mayor, superando significativamente al grupo que trabaja .
 
 <br>
 
@@ -362,9 +359,6 @@ uso_tic_total<- adultos_y_mayores %>%
 
 # Código extraído de: Mapa_España_TICs.R
 
-uso_tic_total<- adultos_y_mayores %>% 
-  full_join(niños_tabla_final, by = "Comunidad") %>% 
-  select(Comunidad , Frecuencia_Total_Niños, Frecuencia_Total_Adultos, Frecuencia_Total_Mayores)
 
 mapa_españa_ccaa <- esp_get_ccaa(moveCAN = TRUE)
 
@@ -695,7 +689,7 @@ Lo interesante es que esto encaja perfectamente con lo que vimos antes: al aumen
 
 ## 6. Relación TICs con Empleabilidad
 
-> **Pregunta 3:** ¿Influye la situación laboral en la relación entre tecnología y salud mental?
+> **Pregunta 4:** ¿Influye la situación laboral en la relación entre tecnología y salud mental?
 
 En nuestro gráfico de barras horizontales de salud mental por situación laboral hemos ordenado a los distintos grupos de población según su tasa de prevalencia de Cuadro Depresivo Mayor.
 

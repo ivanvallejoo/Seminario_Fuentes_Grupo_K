@@ -16,7 +16,7 @@ View(nivel_estudios_parseado)
 
 
 
-tabla_nivel_estudios <- nivel_estudios_parseado %>%
+tabla_nivel_estudios_separada <- nivel_estudios_parseado %>%
   tidyr::separate(
     col = Nombre,
     into = c("Sexo", "Edad", "Nivel_de_estudios", "Prevalencia_depresion"), 
