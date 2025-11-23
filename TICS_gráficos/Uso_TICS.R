@@ -4,7 +4,7 @@ library(readr)
 uso_tic<- mis_datos_tic$uso_internet_socioeconomico
 uso_internet_com_niños<- mis_datos_tic$uso_internet_comunidades_niños
 uso_internet_com_adultos<- mis_datos_tic$uso_internet_comunidades_adultos
-uso_internet_com_mayores<- mis_datos_tic$uso_internet_comunidades_mayores
+uso_internet_com_mayores<- mis_datos_tic$`uso_internet_comunidades_mayores`
 
 View(uso_tic)
 View(uso_internet_com_adultos)

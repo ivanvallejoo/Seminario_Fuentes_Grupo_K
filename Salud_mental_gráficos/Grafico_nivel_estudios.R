@@ -23,6 +23,14 @@ grafico_nivel_estudios<- ggplot(datos_grafico_estudios,
   scale_fill_brewer(palette = "Reds") +
   theme_minimal()
 
+ggsave(
+  filename = "OUTPUT/figuras/grafico_nivel_estudios_sexo.png",
+  plot = grafico_nivel_estudios,
+  width = 12,   
+  height = 8,   
+  dpi = 300,    
+  bg = "white"  
+)
 
-print(grafico_apilado)
+print(grafico_nivel_estudios)
 

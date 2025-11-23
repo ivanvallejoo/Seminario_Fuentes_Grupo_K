@@ -1,5 +1,4 @@
-g_actividad_apilado <- ggplot(datos_grafico_actividad,
-                              
+g_actividad_apilado <- ggplot(tabla_sitaucion_laboral,
                               aes(x = reorder(Actividad.económica, Porcentaje), 
                                   y = Porcentaje, 
                                   fill = Prevalencia.depresión)) +
@@ -40,6 +39,15 @@ g_actividad_apilado <- ggplot(datos_grafico_actividad,
     legend.position = "bottom",
     plot.title = element_text(face = "bold")
   )
+
+ggsave(
+  filename = "OUTPUT/figuras/grafico_depresion_situacion_laboral_sexo.png",
+  plot = g_actividad_apilado,
+  width = 12,
+  height = 8,
+  dpi = 300,
+  bg = "white"
+)
 
 # Imprimir el gráfico
 print(g_actividad_apilado)
