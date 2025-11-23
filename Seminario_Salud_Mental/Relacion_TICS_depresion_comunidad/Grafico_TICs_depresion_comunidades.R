@@ -62,7 +62,14 @@ grafico_TICs_depresion_comunidad<-ggplot(data = tabla_tics_depresion_comunidades
   
   theme_minimal()
 
- 
+ggsave(
+  filename = "OUTPUT/figuras/grafico_tics_depresion_comunidad.png",
+  plot = grafico_TICs_depresion_comunidad,
+  width = 12,
+  height = 8,
+  dpi = 300,
+  bg = "white"
+)
   
 grafico_TICs_depresion_comunidad
 #CONCLUSIÓN de este gráfico, tendría q aparecer una linea de tendencia pero no aparece pq los datos no están lo suficientemente correlacionados
