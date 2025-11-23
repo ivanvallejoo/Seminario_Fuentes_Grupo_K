@@ -68,7 +68,7 @@ Para reproducir este análisis en tu equipo local:
 3.  **Instalar dependencias:** Copia y pega este código en la consola de R para instalar todas las librerías necesarias de una sola vez:
     ```r
     install.packages(c("tidyverse", "rmarkdown", "knitr", "ggthemes", 
-                       "ggtext", "ggrepel", "ggforce", "patchwork", 
+                       "ggtext", "ggrepel", "patchwork", 
                        "sf", "mapSpain", "plotly", "jsonlite", "stringr"))
     ```
 
