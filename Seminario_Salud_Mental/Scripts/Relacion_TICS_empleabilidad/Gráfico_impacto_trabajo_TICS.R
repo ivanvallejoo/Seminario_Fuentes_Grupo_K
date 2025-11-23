@@ -132,6 +132,14 @@ print(grafico_depresion_tics_empleo)
     theme = theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
   )
 
+ggsave(
+  filename = "OUTPUT/figuras/composicion_impacto_trabajo_tics.png",
+  plot = composicion_graficos_empleo,
+  width = 12,
+  height = 14,  # Alto para que quepan bien los dos verticales
+  dpi = 300,
+  bg = "white"
+)
 
 print(composicion_graficos_empleo)
 

@@ -35,7 +35,7 @@ leer_csvs_salud_mental<- function(directorio, delim_fijo, patron = "\\.csv$") {
   return(lista_datos)
 }
 
-mis_datos_salud_mental<- leer_csvs_con_practica(directorio="Datos_salud_mental", delim_fijo = ";")
+mis_datos_salud_mental<- leer_csvs_con_practica(directorio="INPUT/Datos_salud_mental", delim_fijo = ";")
 
 View(mis_datos_salud_mental)
 

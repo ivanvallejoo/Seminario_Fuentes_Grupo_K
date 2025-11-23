@@ -42,15 +42,15 @@ Limpieza de datos crudos, manejo de codificación y normalización de variables:
 * `Tabla y grafico JSON.R`: Procesamiento de datos provenientes de formato JSON.
 
 ### Scripts de Análisis y Visualización
-* **La Paradoja (Empleo vs TICs):** `Impacto del Trabajo y las TICs.R` y `Gráfico_impacto_trabajo_TICS.R` (Genera el gráfico combinado de barras y dispersión con elipses).
+* **La Paradoja (Empleo vs TICs):** `Impacto del Trabajo y las TICs.R` y `Gráfico_impacto_trabajo_TICS.R` (Genera el gráfico combinado de barras y dispersión).
 * **Análisis Territorial:** `Mapa_España_TICS.R` (Generación de mapas con `mapSpain` y `plotly`) y `Uso_TICS.R`.
 * **Factor Educativo:** `Grafico_nivel_estudios.R` (Gráfico de doble eje: TICs vs Depresión).
 * **Contexto Salud:** `Tablas_graficos_CSV.R` (Gráficos de barras apiladas por edad y sexo).
 
 ### Datos (Fuente: INE)
 Los datos brutos se organizan en carpetas temáticas:
-* `/Datos_salud_mental/`: Encuesta Europea de Salud (`depresion_actividad_economica.csv`, etc.).
-* `/Datos_tic/`: Encuesta de Uso de TIC (`uso_internet_socioeconomico.csv`, etc.).
+* `INPUT/Datos_salud_mental/`: Encuesta Europea de Salud (`depresion_actividad_economica.csv`, etc.).
+* `INPUT/Datos_tic/`: Encuesta de Uso de TIC (`uso_internet_socioeconomico.csv`, etc.).
 
 ---
 

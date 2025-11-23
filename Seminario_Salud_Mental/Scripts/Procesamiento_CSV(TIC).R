@@ -29,7 +29,7 @@ leer_csvs_datos_tic <- function(directorio, delim_fijo, patron = "\\.csv$") {
   return(lista_datos)
 }
 
-mis_datos_tic<- leer_csvs_datos_tic(directorio="Datos_TIC", delim_fijo = ";")
+mis_datos_tic<- leer_csvs_datos_tic(directorio="INPUT/Datos_TIC", delim_fijo = ";")
 
 View(mis_datos_tic)
  
