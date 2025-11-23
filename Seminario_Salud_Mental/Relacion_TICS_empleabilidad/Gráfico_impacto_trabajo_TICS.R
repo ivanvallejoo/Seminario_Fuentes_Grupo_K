@@ -43,7 +43,14 @@ grafico_salud_empleo <- df_salud_empleo %>%
     axis.line.y = element_blank()
   )
 
-
+ggsave(
+  filename = "OUTPUT/figuras/grafico_salud_empleo.png",
+  plot = grafico_salud_empleo,
+  width = 12,
+  height = 8,
+  dpi = 300,
+  bg = "white"
+)
 print(grafico_salud_empleo)
 
 # ==============================================================================
@@ -101,6 +108,15 @@ grafico_depresion_tics_empleo<- df_final %>%
     plot.subtitle = element_text(size = 11, color = "grey30"),
     axis.text = element_text(face = "bold")
   )
+
+ggsave(
+  filename = "OUTPUT/figuras/grafico_depresion_tics.png",
+  plot = grafico_depresion_tics_empleo,
+  width = 10,
+  height = 8,
+  dpi = 300,
+  bg = "white"
+)
 
 # Imprimir gráfico
 print(grafico_depresion_tics_empleo)
