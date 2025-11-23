@@ -9,9 +9,13 @@
 
 ## 1. Introducción
 
-La salud mental es un fenómeno influenciado no solo por factores biológicos, sino fuertemente determinado por el entorno socioeconómico. En el contexto actual de digitalización acelerada, surge la necesidad de entender cómo interactúan los estresores clásicos (como el desempleo) con los nuevos determinantes tecnológicos (brecha digital y uso de TICs).
+Este repositorio contiene el trabajo práctico que hemos realizado para el seminario de la asignatura **Fuentes de Datos Biomédicos y Web Semántica**, del Grado en Ingeniería de la Salud (Universidad de Burgos).
 
-Aunque existe amplia literatura sobre el impacto negativo del desempleo, **se desconoce en gran medida si el acceso a la tecnología actúa como un factor protector (conectividad) o un estresor añadido** en poblaciones vulnerables. Este proyecto utiliza **R** y el ecosistema **Tidyverse** para procesar fuentes de datos heterogéneas (Encuestas Nacionales de Salud y TIC) y visualizar estas relaciones complejas.
+La idea principal del proyecto surge de una duda bastante común: siempre escuchamos que la tecnología y las pantallas pueden ser perjudiciales para la salud mental, pero queríamos ver qué dicen realmente los datos.
+
+Para ello, hemos descargado y procesado las encuestas oficiales del INE (Encuesta Nacional de Salud y Encuesta de Uso de TIC) y las hemos analizado utilizando R. Nuestro objetivo era cruzar estas dos fuentes de información para entender si el acceso a internet actúa como un factor de protección o de riesgo, especialmente cuando se combina con situaciones complicadas como el desempleo.
+
+En este repositorio encontrarás todo el código que hemos escrito para limpiar los datos, generar los mapas por Comunidades Autónomas y crear las visualizaciones que comparan el nivel de estudios y la situación laboral con la depresión.
 
 ## 2. Objetivos
 
@@ -19,51 +23,35 @@ Aunque existe amplia literatura sobre el impacto negativo del desempleo, **se de
 Analizar la interacción entre el uso de tecnologías (TICs) y sus distintos ámbitos para determinar su impacto conjunto sobre la prevalencia de **Depresión Mayor** en España.
 
 ### Objetivos Específicos
-1.  **Contextualizar el riesgo laboral:** Cuantificar la "Línea Base" del impacto del desempleo en la salud mental frente a otras situaciones.
-2.  **Evaluar la "Paradoja Tecnológica":** Determinar si un alto uso de Internet mitiga o agrava la depresión en grupos de riesgo (Comparativa: *Estudiantes vs. Desempleados*).
-3.  **Análisis Territorial:** Visualizar mediante mapas interactivos la distribución geográfica de la brecha digital por Comunidades Autónomas.
-4.  **Factor Educativo:** Explorar el rol del nivel de estudios como variable protectora en esta ecuación.
+1.  **Medir el impacto real del desempleo:** Antes de mirar la tecnología, necesitábamos saber cuánto afecta el paro a la salud mental.
+2.  **Evaluar la "Paradoja Tecnológica":** Determinar si un alto uso de Internet suaviza o agrava la depresión en grupos de riesgo como Estudiantes y desempleados.
+3.  **Visualización Territorial:** Nos parecía fundamental llevar estos datos a un mapa para observar si existen diferencias notables entre las distintas Comunidades Autónomas.
+4.  **Factor Educativo:** Otro de nuestros intereses era ver si el nivel de estudios tiene algo que ver en esta relación de TICs y salud mental.
 
 ---
 
 ## 3. Estructura del Repositorio
 
-El proyecto se ha desarrollado siguiendo un flujo de trabajo reproducible, organizado en los siguientes módulos:
+Para mantener el trabajo ordenado y que sea fácil de reproducir, hemos organizado los archivos en varias carpetas y documentos principales:
 
-### Informe Principal
-* **`Seminario.Rmd`**: Script maestro en *RMarkdown*. Integra todo el código, la narrativa y genera el informe final en HTML con estilos personalizados.
-* **`style.css`**: Hoja de estilos personalizada.
-* **`Enviroment_total.RData`**: Entorno de trabajo con los datos pre-procesados para una carga rápida.
-
-### Scripts de Procesamiento
-Limpieza de datos crudos, manejo de codificación y normalización de variables:
-* `Procesamiento_CSV(Salud_Mental).R`: Ingesta de datos de actividad económica y edad.
-* `Procesamiento_CSV(TIC).R`: Ingesta de datos de uso de internet y equipamiento.
-* `Tabla y grafico JSON.R`: Procesamiento de datos provenientes de formato JSON.
-
-### Scripts de Análisis y Visualización
-* **La Paradoja (Empleo vs TICs):** `Impacto del Trabajo y las TICs.R` y `Gráfico_impacto_trabajo_TICS.R` (Genera el gráfico combinado de barras y dispersión).
-* **Análisis Territorial:** `Mapa_España_TICS.R` (Generación de mapas con `mapSpain` y `plotly`) y `Uso_TICS.R`.
-* **Factor Educativo:** `Grafico_nivel_estudios.R` (Gráfico de doble eje: TICs vs Depresión).
-* **Contexto Salud:** `Tablas_graficos_CSV.R` (Gráficos de barras apiladas por edad y sexo).
-
-### Datos (Fuente: INE)
-Los datos brutos se organizan en carpetas temáticas:
-* `INPUT/Datos_salud_mental/`: Encuesta Europea de Salud (`depresion_actividad_economica.csv`, etc.).
-* `INPUT/Datos_tic/`: Encuesta de Uso de TIC (`uso_internet_socioeconomico.csv`, etc.).
-
+* **`Seminario.Rmd`**: Es el archivo principal del proyecto. Aquí es donde unimos todo el código, la narrativa y los gráficos para generar el informe final.
+* **`Seminario.html`**: El resultado final. Es el informe ya compilado y listo para ver en cualquier navegador, con todos los gráficos interactivos funcionando.
+* **`style.css`**: Un archivo de estilos que hemos creado para personalizar la apariencia del HTML y que no tenga el diseño "por defecto" de R.
+* **`Scripts/`**: En esta carpeta hemos guardado los scripts de R individuales que utilizamos para limpiar los datos y crear los gráficos específicos antes de integrarlos en el informe final.
+* **`INPUT/`**: Aquí almacenamos los datos tal y como los descargamos del INE (los archivos CSV y JSON originales).
+* **`OUTPUT/`**: Esta carpeta contiene los archivos procesados, como el *Environment* (`.RData`), que permite cargar los datos ya limpios rápidamente sin tener que repetir todo el proceso desde cero.
+* **`Seminario_Fuentes_Grupo_K.Rproj`**: El archivo de proyecto de RStudio. Es importante abrir RStudio desde aquí para que las rutas a los datos funcionen correctamente.
 ---
 
 ## 4. Resultados Clave
 
-El análisis visual arroja tres conclusiones principales:
+Después de cruzar los datos y generar las visualizaciones, hemos llegado a tres conclusiones principales que resumen lo que hemos encontrado:
 
-1.  **El desempleo es el factor crítico:** La situación de desempleo triplica la prevalencia de cuadros depresivos mayores respecto a la población ocupada, siendo el predictor más fuerte.
-2.  **La Paradoja Digital:** La tecnología no es un escudo universal. Se observa que grupos con **igual intensidad de uso digital** tienen resultados de salud mental opuestos:
-    **Estudiantes:** Alta conexión, baja depresión.
-    **Desempleados:** Alta conexión, muy alta depresión.
-3.  **Educación como Factor Protector:** Existe una correlación inversa clara; a mayor nivel educativo, aumenta la adopción tecnológica y disminuye drásticamente la depresión.
+* **El desempleo es el factor más crítico:** Los datos son contundentes. Estar en situación de desempleo aumenta la probabilidad de sufrir un cuadro depresivo mayor en comparación con las personas que están trabajando.
 
+* **Uso idéntico de las TICs, diferente salud mental:** Hemos observado que dos grupos que usan internet con la misma intensidad (estudiantes y desempleados) tienen niveles de salud mental totalmente opuestos. 
+
+* **La educación como factor de protección:** Existe una relación muy clara entre formación y salud. A medida que sube el nivel de estudios, aumenta el uso de la tecnología y disminuye drásticamente la tasa de depresión.
 ---
 
 ## 5. Instrucciones de Ejecución
@@ -72,21 +60,24 @@ Para reproducir este análisis en tu equipo local:
 
 1.  **Clonar el repositorio:**
     ```bash
-    git clone [https://github.com/ivanvallejoo/Seminario_Fuentes_Grupo_K.git](https://github.com/ivanvallejoo/Seminario_Fuentes_Grupo_K.git)
+    git clone https://github.com/ivanvallejoo/Seminario_Fuentes_Grupo_K.git
     ```
-2.  **Abrir el proyecto:** Abre el archivo `.Rproj` en RStudio.
-3.  **Instalar dependencias:** Asegúrate de tener instaladas las librerías necesarias ejecutando en la consola de R:
+
+2.  **Abrir el proyecto:** Haz doble clic en el archivo `.Rproj` para abrir RStudio. Esto configurará automáticamente las rutas de trabajo.
+
+3.  **Instalar dependencias:** Copia y pega este código en la consola de R para instalar todas las librerías necesarias de una sola vez:
     ```r
     install.packages(c("tidyverse", "rmarkdown", "knitr", "ggthemes", 
                        "ggtext", "ggrepel", "ggforce", "patchwork", 
                        "sf", "mapSpain", "plotly", "jsonlite", "stringr"))
     ```
-4.  **Generar el informe:** Abre `Seminario.Rmd` y pulsa el botón **Knit**.
+
+4.  **Generar el informe:** Abre el archivo `Seminario.Rmd` y pulsa el botón **Knit** (el icono del ovillo de lana) en la barra superior.
 
 ---
 
 ## 6. Referencias y Recursos
 
 * **Lenguaje:** [R Project](https://www.r-project.org/)
-* **Librerías Gráficas:** `ggplot2`, `patchwork`, `mapSpain`.
+* **Librerías Principales:** `tidyverse` (procesamiento), `ggplot2` y `plotly` (visualización), `mapSpain` (mapas).
 * **Fuente de Datos:** Instituto Nacional de Estadística (INE) - [www.ine.es](https://www.ine.es)
