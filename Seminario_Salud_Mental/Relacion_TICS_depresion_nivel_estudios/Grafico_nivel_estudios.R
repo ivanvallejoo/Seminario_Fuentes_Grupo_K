@@ -34,7 +34,7 @@ grafico_nivel_estudios <- ggplot(tabla_nivel_estudios_final,
   ) +
   
   labs(
-    title = "Nivel de Estudios: Factor Protector",
+    title = "Relación TICs y Depresión por Nivel de Estudios",
     subtitle = "Relación inversa entre adopción tecnológica y depresión",
     color = ""
   ) +

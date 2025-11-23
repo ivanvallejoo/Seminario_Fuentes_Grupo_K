@@ -50,7 +50,7 @@ library(plotly)
 
 **Cargamos el enviroment necesario.**
 ```{r warning=FALSE, message=FALSE}
-load("OUTPUT/Enviroment_total.RData")
+load("OUTPUT/Environment_total.RData")
 ```
 
 <br>
@@ -169,7 +169,8 @@ Se representa en el eje x el porcentaje de cuadros depresivos, en el eje y la si
   # Código extraído de: Tabla_situacion_laboral.R y Grafico_situacion_laboral.R
   
   
-  # Tabla
+  # Cración de tabla situación laboral en función de la depresión
+
   datos_grafico_estudios <- mis_datos_salud_mental$depresion_actividad_economica %>%
   
   mutate(
@@ -183,7 +184,7 @@ Se representa en el eje x el porcentaje de cuadros depresivos, en el eje y la si
   )
 
   
-  # Gráfico
+  # Gráfico depresión por situación laboral
   
  g_actividad_apilado <- ggplot(datos_grafico_estudios,
                               aes(x = reorder(Actividad.económica, Porcentaje), 
@@ -245,6 +246,8 @@ Analizamos la gravedad de la depresión en función de los estudios.
 
 # Código extraído de: Tabla_nivel_estudios.R y Grafico_nivel_estudios.R
 
+#Tabla depresión por nivel de estudios
+
 tabla_nivel_estudios <- nivel_estudios_parseado %>%
   tidyr::separate(
     col = Nombre,
@@ -266,6 +269,8 @@ datos_grafico_estudios <- tabla_nivel_estudios %>%
     Nivel_de_estudios, levels = c("TOTAL", "Básico e inferior", "Intermedio","Superior" )
     )
   )
+
+#Gráfico depresión por nivel estudios
 
 grafico_nivel_estudios<- ggplot(datos_grafico_estudios,
                              aes(x = Nivel_de_estudios,
@@ -377,6 +382,7 @@ uso_tic_total<- adultos_y_mayores %>%
 mapa_españa_ccaa <- esp_get_ccaa(moveCAN = TRUE)
 
 # Corrección para mapa
+
 uso_tic_total_corregido_mapa <- uso_tic_total %>%
   mutate(
     Comunidad = case_when(
@@ -507,7 +513,8 @@ names_grupos <- c("Niños (10-15)", "Adultos (16-74)", "Mayores (75+)")
 uso_tic_ordenada <- uso_tic_total_pivotada %>% 
   mutate(Grupo_Edad = factor(Grupo_Edad, levels = orden_grupos, labels = names_grupos))
 
-# Gráfico
+# Gráfico uso de tics por comunidad autónoma y rango de edad
+
 ggplot(uso_tic_ordenada, aes(x=Comunidad, y=Frecuencia_Total, fill=Grupo_Edad))+
   geom_bar(stat = "identity", position = "dodge")+
   labs(
@@ -547,6 +554,7 @@ La sombra dibujada indica el intervalo de confianza, aquellas comunidades autón
 
 # Código extraído de: Grafico_Tics_depresion_comunidades.R y Tabla_depresion_sexo_comunidades.R
 
+#Corrección de nombres
 uso_tic_adultos<-adultos_tabla%>% 
   filter(Comunidad != "Total nacional") %>% 
   mutate(
@@ -575,6 +583,8 @@ uso_tic_adultos<-adultos_tabla%>%
   )
 
 
+#Corrección de nombres para poder juntar las tablas
+
 depresion_por_comunidades_corregido<- depresion_por_comunidades %>% 
   mutate(
     Comunidad = case_when(
@@ -602,9 +612,11 @@ depresion_por_comunidades_corregido<- depresion_por_comunidades %>%
     Porcentaje_depresion = parse_number(Porcentaje_depresion, locale = locale(decimal_mark = ","))
   )
 
+#Join para crear la tabla que utilizaremos para diseñar el gráfico
 tabla_tics_depresion_comunidades<- uso_tic_adultos%>% 
   left_join(depresion_por_comunidades_corregido, by = "Comunidad")
 
+#Diseño del gráfico tics depresión por comunidad
 grafico_TICs_depresion_comunidad<-ggplot(data = tabla_tics_depresion_comunidades, 
                                          aes(x = Frecuencia_Total_Adultos, 
                                              y = Porcentaje_depresion)) +
@@ -653,13 +665,17 @@ El objetivo del gráfico es observar cómo se comportan y correlacionan ambas va
 
 # Código extraído de: Grafico_nivel_estudios.R
 
+#Join de las tablas limpiadas previamente.
+
   tabla_nivel_estudios_final<- tabla_depresion_nivel_estudios %>% 
   full_join(tabla_tics_nivel_estudios, by= "Nivel_de_estudios")
 
+#Creación de objetos necesarios para el diseño del gráfico
   max_tics <- max(tabla_nivel_estudios_final$Porcentaje_TICS, na.rm = TRUE)
   max_depresion <- max(tabla_nivel_estudios_final$Porcentaje_Depresion, na.rm = TRUE)
   factor_escala <- max_tics / max_depresion
 
+#Gráfico Nivel de Estudios
   ggplot(tabla_nivel_estudios_final, 
          aes(x = as.numeric(factor(Nivel_de_estudios, 
                                    levels = c("Básico e inferior", "Intermedio", "Superior"))), 
@@ -686,7 +702,7 @@ El objetivo del gráfico es observar cómo se comportan y correlacionan ambas va
     ) +
     
     labs(
-      title = "Nivel de Estudios: Factor Protector",
+      title = "Relación TICs y Depresión por Nivel de Estudios",
       subtitle = "Relación inversa entre adopción tecnológica y depresión",
       color = ""
     ) +
@@ -881,3 +897,26 @@ De aquí se pueden sacar una serie de conclusiones:
 2. **Tener internet no te salva**: Los desempleados usan internet tanto como los estudiantes, pero tienen muchísima más depresión. La tecnología no es una "vacuna" contra el malestar del paro.
 
 3. **Estar ocupado protege**: Trabajar o estudiar son los verdaderos escudos para la salud mental, no la conexión digital.
+
+
+
+## Bibliografía
+
+Para la realización de este estudio se han utilizado datos oficiales procedentes de las siguientes operaciones estadísticas del Instituto Nacional de Estadística (INE):
+
+* **Instituto Nacional de Estadística (INE). (2018).** Encuesta Nacional de Salud de España 2017 (ENSE 2017).
+Recuperado de: [https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736176783&menu=resultados&idp=1254735573175](https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736176783&menu=resultados&idp=1254735573175)
+
+* **Instituto Nacional de Estadística (INE). (2024).** Encuesta sobre Equipamiento y Uso de Tecnologías de Información y Comunicación en los Hogares 2024. 
+Recuperado de: [https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736176741&menu=resultados&idp=1254735976608](https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736176741&menu=resultados&idp=1254735976608)
+
+<br>
+
+**Software y Paquetes**
+
+Este análisis ha sido realizado utilizando el lenguaje de programación **R**. Se han empleado los siguientes paquetes principales para el procesamiento, análisis y visualización de datos:
+
+* **tidyverse** (Wickham et al., 2019) para la manipulación de datos.
+* **ggplot2** (Wickham, 2016) y **plotly** (Sievert, 2020) para la visualización gráfica.
+* **mapSpain** (Hernangómez, 2023) para la cartografía y datos geográficos.
+* **jsonlite** (Ooms, 2014) para la conexión con la API del INE.
