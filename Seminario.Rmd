@@ -138,6 +138,8 @@ leer_csvs_datos_tic <- function(directorio, delim_fijo, patron = "\\.csv$") {
   return(lista_datos)
 }
 
+mis_datos_tic<- leer_csvs_datos_tic(directorio="Datos_TIC", delim_fijo = ";")
+
 ```
 <br>
 
@@ -344,6 +346,16 @@ niños_tabla_pivotada<- niños_tabla %>%
          Niños_con_movil = `Niños que disponen de teléfono móvil`
          )
 
+niños_tabla_final<- niños_tabla_pivotada %>% 
+  rowwise() %>% 
+  mutate(
+    Frecuencia_Total_Niños = mean(
+      c(Niños_internet, Niños_ordenador, Niños_con_movil), 
+      na.rm = TRUE
+    )
+  ) %>% 
+  select(Comunidad, Frecuencia_Total_Niños)
+
 #Join de tabla adultos y mayores
 adultos_y_mayores <- adultos_tabla %>% 
   full_join(mayores_tabla, by = c("Comunidad"))
@@ -354,6 +366,8 @@ uso_tic_total<- adultos_y_mayores %>%
   select(Comunidad , Frecuencia_Total_Niños, Frecuencia_Total_Adultos, Frecuencia_Total_Mayores)
 
 ```
+
+<br>
 
 ```{r warning=FALSE, message=FALSE }
 

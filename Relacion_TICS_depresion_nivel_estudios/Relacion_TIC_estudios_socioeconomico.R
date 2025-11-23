@@ -1,6 +1,7 @@
   
 library(dplyr)
 library(readr)
+
   csv_TICS_socioeconomico<- mis_datos_tic$uso_internet_socioeconomico
   
   View(csv_TICS_socioeconomico)
@@ -10,7 +11,8 @@ library(readr)
   View(json_nivel_estudios)
   
   
-  tabla_depresion_nivel_estudios <- json_nivel_estudios %>%
+  
+  tabla_depresion_nivel_estudios <- tabla_nivel_estudios_separada %>%
     filter(Sexo == "Ambos sexos",
            Prevalencia_depresion == "Cuadro depresivo mayor",
            Nivel_de_estudios != "TOTAL" ) %>% 
