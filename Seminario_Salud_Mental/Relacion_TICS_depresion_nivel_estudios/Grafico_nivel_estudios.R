@@ -8,7 +8,7 @@ max_tics <- max(tabla_nivel_estudios_final$Porcentaje_TICS, na.rm = TRUE)
 max_depresion <- max(tabla_nivel_estudios_final$Porcentaje_Depresion, na.rm = TRUE)
 factor_escala <- max_tics / max_depresion
 
-ggplot(tabla_nivel_estudios_final, 
+grafico_nivel_estudios <- ggplot(tabla_nivel_estudios_final, 
        aes(x = as.numeric(factor(Nivel_de_estudios, 
                                  levels = c("Básico e inferior", "Intermedio", "Superior"))), 
            group = 1)) +
@@ -40,5 +40,14 @@ ggplot(tabla_nivel_estudios_final,
   ) +
   theme_classic() +
   theme(legend.position = "bottom")
+
+ggsave(
+  filename = "OUTPUT/figuras/grafico_nivel_estudios.png",
+  plot = grafico_nivel_estudios,
+  width = 12,
+  height = 8,
+  dpi = 300,
+  bg = "white"
+)
 
 View(tabla_nivel_estudios_final)
