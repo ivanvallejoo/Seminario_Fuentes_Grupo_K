@@ -305,9 +305,66 @@ Las zonas más oscuras es donde más uso de las TICs hay, las zonas menos claras
 
 
 
-```{r warning=FALSE, message=FALSE}
-# Código extraído de: Mapa_España_TICS.R
+```{r warning=FALSE, message=FALSE, eval=FALSE}
+# Código extraído de: Uso_TICs.R
 
+#Función para obtener las tablas de adultos y mayores.
+
+funcion_tic_adultos_mayores <- function(csv_tic, tipo_poblacion, uso_frecuente) {
+  
+  datos_limpios <- csv_tic %>%
+    filter(
+      Clase.de.población == tipo_poblacion,
+      Frecuencia.de.uso %in% uso_frecuente,
+      Comunidades.y.Ciudades.Autónomas != "Total nacional"
+    ) %>%
+    select(
+      Comunidad = Comunidades.y.Ciudades.Autónomas,
+      Porcentaje = Total
+    ) %>%
+    mutate(
+      Porcentaje = parse_number(Porcentaje, locale = locale(decimal_mark = ","))
+    ) %>%
+    group_by(Comunidad) %>%
+    summarise(
+      Frecuencia_Total = mean(Porcentaje, na.rm = TRUE),
+      Desviacion_Estandar = sd(Porcentaje, na.rm = TRUE)
+    )
+  
+  return(datos_limpios)
+}
+
+#Tabla niños pivotada que usaremos para hacer el join.
+
+niños_tabla_pivotada<- niños_tabla %>%
+  tidyr::pivot_wider(
+    names_from = Tipo_poblacion_niños,
+    values_from = Porcentaje_niños
+  ) %>% 
+  select(Comunidad,
+         Niños_internet = `Niños usuarios de Internet en los últimos 3 meses`,
+         Niños_ordenador = `Niños usuarios de ordenador en los últimos 3 meses`,
+         Niños_con_movil = `Niños que disponen de teléfono móvil`
+         )
+
+#Join de tabla adultos y mayores
+adultos_y_mayores <- adultos_tabla %>% 
+  full_join(mayores_tabla, by = c("Comunidad"))
+
+#Join con las tres tablas, tabla uso_tic_total usada para hacer el mapa de España.
+uso_tic_total<- adultos_y_mayores %>% 
+  full_join(niños_tabla_final, by = "Comunidad") %>% 
+  select(Comunidad , Frecuencia_Total_Niños, Frecuencia_Total_Adultos, Frecuencia_Total_Mayores)
+
+```
+
+```{r warning=FALSE, message=FALSE }
+
+# Código extraído de: Mapa_España_TICs.R
+
+uso_tic_total<- adultos_y_mayores %>% 
+  full_join(niños_tabla_final, by = "Comunidad") %>% 
+  select(Comunidad , Frecuencia_Total_Niños, Frecuencia_Total_Adultos, Frecuencia_Total_Mayores)
 
 mapa_españa_ccaa <- esp_get_ccaa(moveCAN = TRUE)
 
@@ -588,7 +645,9 @@ El objetivo del gráfico es observar cómo se comportan y correlacionan ambas va
 
 # Código extraído de: Grafico_nivel_estudios.R
 
-  
+  tabla_nivel_estudios_final<- tabla_depresion_nivel_estudios %>% 
+  full_join(tabla_tics_nivel_estudios, by= "Nivel_de_estudios")
+
   max_tics <- max(tabla_nivel_estudios_final$Porcentaje_TICS, na.rm = TRUE)
   max_depresion <- max(tabla_nivel_estudios_final$Porcentaje_Depresion, na.rm = TRUE)
   factor_escala <- max_tics / max_depresion
