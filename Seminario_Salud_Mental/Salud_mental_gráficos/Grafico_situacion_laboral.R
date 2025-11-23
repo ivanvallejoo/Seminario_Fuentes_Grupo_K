@@ -1,5 +1,4 @@
-g_actividad_apilado <- ggplot(datos_grafico_actividad,
-                              
+g_actividad_apilado <- ggplot(tabla_sitaucion_laboral,
                               aes(x = reorder(Actividad.económica, Porcentaje), 
                                   y = Porcentaje, 
                                   fill = Prevalencia.depresión)) +
