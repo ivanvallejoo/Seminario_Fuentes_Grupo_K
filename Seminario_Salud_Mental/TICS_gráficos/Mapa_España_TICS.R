@@ -78,4 +78,9 @@ mapa_final_españa <- ggplotly(mapa_intensidad, tooltip = "text") %>%
     hoverlabel = list(bgcolor = "white", bordercolor = "black", font = list(color = "black"))
   )
 
+htmlwidgets::saveWidget(
+  widget = mapa_final_españa,
+  file = "OUTPUT/figuras/mapa_interactivo_españa.html"
+)
+
 mapa_final_españa
