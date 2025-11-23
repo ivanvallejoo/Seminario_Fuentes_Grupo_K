@@ -5,7 +5,7 @@ library(tools)
 
 #Función para leer los CSV, itera sobre el directorio que le pasemos y crea una lista que contiene todos los csvs que vamos a usar
 
-leer_csvs_con_practica <- function(directorio, delim_fijo, patron = "\\.csv$") {
+leer_csvs_salud_mental<- function(directorio, delim_fijo, patron = "\\.csv$") {
   
   #Ruta de los archivos que coincidan con el patrón definido arriba
   archivos <- list.files(path = directorio, pattern = patron, full.names = TRUE)

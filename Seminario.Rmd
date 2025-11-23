@@ -22,7 +22,7 @@ author: "Iván Vallejo Cabrero y Diego Ugarte López"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Paquetes empleados
+**Paquetes empleados**
 
 ```{r message=FALSE, warning=FALSE}
 
@@ -46,11 +46,99 @@ library(plotly)
 
 ```
 
+<br>
 
+**Cargamos el enviroment necesario.**
 ```{r warning=FALSE, message=FALSE}
 load("OUTPUT/Enviroment_total.RData")
 ```
 
+<br>
+**Funciones para abrir los CSVs que utilizaremos y el Json.**
+```{r warning=FALSE, message=FALSE, eval= FALSE}
+
+#Función para leer los CSV de salud mental, itera sobre el directorio que le pasemos y crea una lista que contiene todos los csvs que utilizaremos.
+
+leer_csvs_salud_mental <- function(directorio, delim_fijo, patron = "\\.csv$") {
+  
+  archivos <- list.files(path = directorio, pattern = patron, full.names = TRUE)
+  
+  lista_datos <- list() 
+  
+  for (archivo in archivos) {
+    
+    nombre <- tools::file_path_sans_ext(basename(archivo))
+    
+    datos <- tryCatch(
+      read_delim(archivo, delim = delim_fijo, locale = locale(encoding = "UTF-8")),
+      
+      error = function(e) {
+        read_delim(archivo, delim = delim_fijo, locale = locale(encoding = "Latin1"))
+      }
+    )
+    
+    colnames(datos) <- make.names(colnames(datos))
+    
+    lista_datos[[nombre]] <- datos
+  }
+  
+  return(lista_datos)
+}
+
+
+
+mis_datos_salud_mental<- leer_csvs_salud_mental(directorio="Datos_salud_mental", delim_fijo = ";")
+
+#Dirección web (URL) donde se encuentra nuestr Json.
+
+url_api_ine <- "https://servicios.ine.es/wstempus/js/ES/DATOS_TABLA/47804"
+
+#Convierte los datos de la web a un objeto Json de R
+json_nivel_estudios<-jsonlite::fromJSON(url_api_ine)
+
+#Función que convierte el Json a una tabla 
+nivel_estudios_parseado <- tidyr::unnest(json_nivel_estudios, cols = Data) 
+
+tabla_nivel_estudios <- nivel_estudios_parseado %>%
+  tidyr::separate(
+    col = Nombre,
+    into = c("Sexo", "Edad", "Nivel_de_estudios", "Prevalencia_depresion"), 
+    sep = ", "
+  ) %>% 
+  rename(Porcentaje = Valor) %>%  
+  select(-Secreto)
+
+
+
+#Función para leer los CSV de TICs, itera sobre el directorio que le pasemos y crea una lista que contiene todos los csvs que utilizaremos.
+
+leer_csvs_datos_tic <- function(directorio, delim_fijo, patron = "\\.csv$") {
+  
+  
+  archivos <- list.files(path = directorio, pattern = patron, full.names = TRUE)
+  
+  lista_datos <- list()
+  
+  for (archivo in archivos) {
+    
+    nombre <- tools::file_path_sans_ext(basename(archivo))
+    
+    datos <- tryCatch(
+      read_delim(archivo, delim = delim_fijo, locale = locale(encoding = "UTF-8")),
+      error = function(e) {
+        read_delim(archivo, delim = delim_fijo, locale = locale(encoding = "Latin1"))
+      }
+    )
+    
+    colnames(datos) <- make.names(colnames(datos))
+    
+    lista_datos[[nombre]] <- datos
+  }
+  
+  return(lista_datos)
+}
+
+```
 <br>
 
 ## 1. Introducción
@@ -80,7 +168,6 @@ En el siguiente gráfico vemos datos depresivos mayores en mujeres que en hombre
 
 > Dato Crítico: El grupo de Desempleo presenta las tasas más altas de Cuadro Depresivo Mayor, superando significativamente al grupo que trabaja .
 
-<br>
 
 ```{r warning=FALSE, message=FALSE}
   # Código extraído de: Tabla_situacion_laboral.R y Grafico_situacion_laboral.R
