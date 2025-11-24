@@ -39,7 +39,7 @@ Para mantener el trabajo ordenado y que sea fácil de reproducir, hemos organiza
 * **`style.css`**: Un archivo de estilos que hemos creado para personalizar la apariencia del HTML y que no tenga el diseño "por defecto" de R.
 * **`Scripts/`**: En esta carpeta hemos guardado los scripts de R individuales que utilizamos para limpiar los datos y crear los gráficos específicos antes de integrarlos en el informe final.
 * **`INPUT/`**: Aquí almacenamos los datos tal y como los descargamos del INE (los archivos CSV y JSON originales).
-* **`OUTPUT/`**: Esta carpeta contiene los archivos procesados, como el *Environment* (`.RData`), que permite cargar los datos ya limpios rápidamente sin tener que repetir todo el proceso desde cero.
+* **`OUTPUT/`**: Esta carpeta contiene los archivos procesados, como el *Environment* (`.RData`) y la carpeta `figuras` donde se encuentran imágenes de los gráficos generados.
 * **`Seminario_Fuentes_Grupo_K.Rproj`**: El archivo de proyecto de RStudio. Es importante abrir RStudio desde aquí para que las rutas a los datos funcionen correctamente.
 ---
 
