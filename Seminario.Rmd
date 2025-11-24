@@ -48,7 +48,7 @@ library(plotly)
 
 <br>
 
-**Cargamos el enviroment necesario.**
+**Cargamos el environment necesario.**
 ```{r warning=FALSE, message=FALSE}
 load("OUTPUT/Environment_total.RData")
 ```
@@ -870,9 +870,9 @@ De aquí se pueden sacar una serie de conclusiones:
 
 1. **El paro es el enemigo nº 1**: El desempleo dispara el riesgo de depresión más que cualquier otra cosa.
 
-2. **Tener internet no te salva**: Los desempleados usan internet tanto como los estudiantes, pero tienen muchísima más depresión. La tecnología no es una "vacuna" contra el malestar del paro.
+2. **Tener internet no te salva**: Los desempleados usan internet tanto como los estudiantes, pero tienen muchísima más depresión. La tecnología no es una solución contra los desempleados.
 
-3. **Estar ocupado protege**: Trabajar o estudiar son los verdaderos escudos para la salud mental, no la conexión digital.
+3. **Estar ocupado protege**: Trabajar o estudiar son ayudas para la salud mental, no la conexión digital.
 
 <br>
 
@@ -889,8 +889,7 @@ Para la realización de este estudio se han utilizado datos oficiales procedente
 
 #### **Software y Paquetes**
 
-Este análisis ha sido realizado utilizando el lenguaje de programación **R**. Se han empleado los siguientes paquetes principales para el procesamiento, análisis y visualización de datos:
-
+Este análisis ha sido realizado utilizando el lenguaje de programación **R**. Se han empleado los siguientes paquetes:
 * **tidyverse** (Wickham et al., 2019) para la manipulación y estructuración de datos.
 * **ggplot2** (Wickham, 2016) y **plotly** (Sievert, 2020) para la visualización gráfica estática e interactiva.
 * **mapSpain** (Hernangómez, 2023) para la cartografía y datos geográficos.
